@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'LegacyChat'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1A2A32AB18B4425AAC6E680F6178E546 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_75965387D239451698C271786481F200 }}
           package: .
