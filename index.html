@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Azure Service</title>
+    <script>
+        function handleClick() {
+            // Make an API call when the button is clicked
+            fetch('/api/program', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Show the response to the user
+                document.getElementById('response').innerText = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Welcome to My Azure Service</h1>
+    <p>Click the button below to trigger the Python program:</p>
+    <button onclick="handleClick()">Run Python Program</button>
+    <br>
+    <p id="response"></p>
+</body>
+</html>
