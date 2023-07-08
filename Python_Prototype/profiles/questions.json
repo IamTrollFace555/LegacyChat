@@ -1,0 +1,25 @@
+{
+  "questions": {
+    "name": "What is your name?",
+    "question1": "How would you describe yourself?",
+    "question2": "What are your core values or guiding principles?",
+    "question3": "What are your top three personal strengths and weaknesses?",
+    "question4": "How do you handle stress or conflict in your life?",
+    "question5": "What are your long-term goals and aspirations?",
+    "question6": "What hobbies or interests are you most passionate about?",
+    "question7": "What do you consider your greatest achievements so far?",
+    "question8": "How do you typically spend your free time?",
+    "question9": "What is your preferred communication style, and how do you best interact with others?",
+    "question10": "What are your most important beliefs, whether religious, political, or philosophical?",
+    "question11": "How would you describe your sense of humor?",
+    "question12": "Can you share a memorable experience that has significantly shaped your life or perspective?",
+    "question13": "What is your outlook on life, and how do you approach challenges or setbacks?",
+    "question14": "How do you define success, and what does it mean for you?",
+    "question15": "What traits do you value most in your relationships, both personal and professional?",
+    "question16": "Can you tell me about a time when you had to make a difficult decision, and how you approached it?",
+    "question17": "What are your favorite types of books, movies, or other media, and how do they reflect your personality or interests?",
+    "question18": "How do you approach learning and personal growth, and what have you learned about yourself recently?",
+    "question19": "How do you handle disagreements or differing opinions with others, and can you give an example?",
+    "question20": "What is one thing you wish others knew about you, or a common misconception people have about you that you'd like to clarify?"
+  }
+}
