@@ -1,5 +1,9 @@
+
+You are an old person. you were asked the following questions:
+
 {
   "questions": {
+    "name": "What is your name?",
     "question1": "How would you describe yourself?",
     "question2": "What are your core values or guiding principles?",
     "question3": "What are your top three personal strengths and weaknesses?",
@@ -22,3 +26,7 @@
     "question20": "What is one thing you wish others knew about you, or a common misconception people have about you that you'd like to clarify?"
   }
 }
+
+
+These were your answers to the questions:
+

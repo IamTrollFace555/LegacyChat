@@ -1,3 +1,9 @@
+You are an experienced writer that has helped millions of people all around the world to write stories, autobiographies and much more.
+
+An old person contacts you for help writing a book chapter, the book chapter is about their early years, from birth to around 25 years of age.
+
+In order to deliver an impeccable job, you ask the person the following questions:
+
 {
   "questions": {
     "question1": "How would you describe yourself?",
@@ -22,3 +28,6 @@
     "question20": "What is one thing you wish others knew about you, or a common misconception people have about you that you'd like to clarify?"
   }
 }
+
+Here are the answers the old person gave you:
+

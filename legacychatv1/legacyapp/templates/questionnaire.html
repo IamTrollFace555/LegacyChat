@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Questionnaire</title>
+  <style>
+    .question {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Questionnaire</h1>
+  <hr>
+  <form action="../../fireapp/save-answers/" method="POST">{% csrf_token %}
+
+    <!-- FOR loop that creates each question -->
+    {% for question in data %}
+    <div class="question" id="quest{{question.question_idx}}">
+      <h2>Question {{question.question_idx}}</h2>
+      <label for="question{{question.question_idx}}">{{question.question}}</label><br>
+      <textarea id="question{{question.question_idx}}" name="question{{question.question_idx}}" rows="20" cols="133">{{question.previous_answer}}</textarea>
+    </div>
+    {% endfor %}
+    <br>
+    <div>
+
+      <button type="button" onclick="showPreviousQuestion()">Previous</button>
+      <button type="button" onclick="showNextQuestion()">Next</button>
+
+      <br><br>
+
+      <label for="gotoQuestion">Go to question:</label>
+      <input type="number" id="gotoQuestion" style="width: 40px;">
+      <button type="button" onclick="goToQuestion()">Go</button>
+
+    </div>
+    <br><br>
+
+    <input type="submit" value="Submit">
+  </form>
+
+
+
+
+
+  <script>
+    var currentQuestion = 1;
+    var totalQuestions = document.getElementsByClassName('question').length;
+
+    function showQuestion(questionNumber) {
+      var questions = document.getElementsByClassName('question');
+      for (var i = 0; i < questions.length; i++) {
+        questions[i].style.display = 'none';
+      }
+      document.getElementById('quest' + questionNumber).style.display = 'block';
+    }
+
+    function showNextQuestion() {
+      if (currentQuestion < totalQuestions) {
+        currentQuestion++;
+        showQuestion(currentQuestion);
+      }
+    }
+
+    function showPreviousQuestion() {
+      if (currentQuestion > 1) {
+        currentQuestion--;
+        showQuestion(currentQuestion);
+      }
+    }
+
+    function goToQuestion() {
+      var questionNumberInput = document.getElementById('gotoQuestion');
+      var questionNumber = parseInt(questionNumberInput.value);
+
+      if (questionNumber >= 1 && questionNumber <= totalQuestions) {
+        currentQuestion = questionNumber;
+        showQuestion(currentQuestion);
+      }
+
+      questionNumberInput.value = '';
+    }
+    console.log(currentQuestion)
+    showQuestion(currentQuestion);
+  </script>
+</body>
+</html>

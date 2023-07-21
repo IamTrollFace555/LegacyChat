@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{first_name}} {{last_name}}!</h1>
+    <p> This is where your journey begins, the first step is to complete a questionnaire to help us build your profile.
+        Please make sure to answer in an accurate and meaningful way, this will help our AI model to generate better results</p>
+
+    <button onclick="window.location.href='questionnaire/'">Go to Questionnaire</button>
+    <br><br><br>
+    <hr>
+    <br>
+    <h3>If you've already finished answering the questionnaire...</h3>
+    <p> It's now time to generate your text! We will be generating a book chapter based on the information you provided us.
+        If you've already generated your text, you can still go back and edit it however you'd like</p>
+    <button onclick="window.location.href='chapter-edit/'">Edit my text!</button>
+</body>
+</html>

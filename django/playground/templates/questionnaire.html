@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Questionnaire</title>
+</head>
+<body>
+    <h2>Questionnaire</h2>
+    <form action="{% url 'submit_questionnaire' %}" method="POST">{% csrf_token %}
+
+        <label for="name">What is your name?</label><br>
+        <textarea id="name" name="name" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question1">How would you describe yourself?</label><br>
+        <textarea id="question1" name="question1" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question2">What are your core values or guiding principles?</label><br>
+        <textarea id="question2" name="question2" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question3">What are your top three personal strengths and weaknesses?</label><br>
+        <textarea id="question3" name="question3" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question4">How do you handle stress or conflict in your life?</label><br>
+        <textarea id="question4" name="question4" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question5">What are your long-term goals and aspirations?</label><br>
+        <textarea id="question5" name="question5" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question6">What hobbies or interests are you most passionate about?</label><br>
+        <textarea id="question6" name="question6" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question7">What do you consider your greatest achievements so far?</label><br>
+        <textarea id="question7" name="question7" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question8">How do you typically spend your free time?</label><br>
+        <textarea id="question8" name="question8" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question9">What is your preferred communication style, and how do you best interact with others?</label><br>
+        <textarea id="question9" name="question9" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question10">What are your most important beliefs, whether religious, political, or philosophical?</label><br>
+        <textarea id="question10" name="question10" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question11">How would you describe your sense of humor?</label><br>
+        <textarea id="question11" name="question11" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question12">Can you share a memorable experience that has significantly shaped your life or perspective?</label><br>
+        <textarea id="question12" name="question12" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question13">What is your outlook on life, and how do you approach challenges or setbacks?</label><br>
+        <textarea id="question13" name="question13" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question14">How do you define success, and what does it mean for you?</label><br>
+        <textarea id="question14" name="question14" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question15">What traits do you value most in your relationships, both personal and professional?</label><br>
+        <textarea id="question15" name="question15" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question16">Can you tell me about a time when you had to make a difficult decision, and how you approached it?</label><br>
+        <textarea id="question16" name="question16" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question17">What are your favorite types of books, movies, or other media, and how do they reflect your personality or interests?</label><br>
+        <textarea id="question17" name="question17" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question18">How do you approach learning and personal growth, and what have you learned about yourself recently?</label><br>
+        <textarea id="question18" name="question18" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question19">How do you handle disagreements or differing opinions with others, and can you give an example?</label><br>
+        <textarea id="question19" name="question19" rows="4" cols="50"></textarea><br><br>
+
+        <label for="question20">What is one thing you wish others knew about you, or a common misconception people have about you that you'd like to clarify?</label><br>
+        <textarea id="question20" name="question20" rows="4" cols="50"></textarea><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit your chapter</title>
+</head>
+<body>
+    <h1>Editable Text Form</h1>
+    <form action="{% url 'save_text' %}" method="POST">{% csrf_token %}
+        <label for="text">Enter some text:</label><br>
+        <textarea id="text" name="text" rows="30" cols="200">{{text}}</textarea><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

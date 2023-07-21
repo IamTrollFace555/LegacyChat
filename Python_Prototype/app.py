@@ -12,7 +12,7 @@ RESPONSE = ""
 
 class SampleApp(tk.Tk):
     def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
+        tk.Tk.__init__(self, *args, **kwargs)   
 
         self.geometry("1600x900")
 
