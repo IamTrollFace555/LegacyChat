@@ -8,7 +8,7 @@
     <form action="../../fireapp/save-text/" method="POST">{% csrf_token %}
         <label for="text">This is the chapter that our AI model generated for you:</label><br>
         <textarea id="text" name="text" rows="30" cols="200">{{text}}</textarea><br><br>
-        <input type="submit" value="Submit">
+        <button type="submit" id="chapter" name="chapter" value="{{chapter}}"> Save!</button>
     </form>
 </body>
 </html>

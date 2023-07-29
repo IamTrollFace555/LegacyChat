@@ -2,6 +2,18 @@ import requests
 from django.shortcuts import render, redirect
 import pyrebase
 
+QUESTIONNAIRE_DICT = {
+    "0": "profile",
+    "1": "Chapter 1: The Early Years: Foundations of a Life",
+    "2": "Chapter 2: Teenage Revelations: Navigating Change and Discovery",
+    "3": "Chapter 3: Into Adulthood: The Awakening of Purpose",
+    "4": "Chapter 4: Personal Milestones: Love, Family, and Personal Growth",
+    "5": "Chapter 5: Mature Reflections: A Lifetime of Lessons Learned",
+    "6": "Chapter 6: Golden Years: Embracing Wisdom and Legacy",
+}
+
+CH_DICT = lambda x: "ch" + x if x != "0" else "profile"
+
 # ==================================================================================================================== #
 # Views
 # ==================================================================================================================== #
@@ -36,6 +48,31 @@ def register(request):
         data = {
             "first-name": first_name,
             "last-name": last_name,
+            "completed-chapters": {
+                "profile": False,
+                "ch1": False,
+                "ch2": False,
+                "ch3": False,
+                "ch4": False,
+                "ch5": False,
+                "ch6": False,
+            },
+            "chapter-tokens": {
+                "ch1": 4,
+                "ch2": 4,
+                "ch3": 4,
+                "ch4": 4,
+                "ch5": 4,
+                "ch6": 4,
+            },
+            "chosen-option": {
+                "ch1": 1,
+                "ch2": 1,
+                "ch3": 1,
+                "ch4": 1,
+                "ch5": 1,
+                "ch6": 1,
+            },
         }
 
         db.child("personal-data").child(ID).set(data)
@@ -59,16 +96,24 @@ def login(request):
 def save_answers(request):
     if request.method == "POST":
         response = request.POST
+        chapter = response["chapter"]
 
         data = {}
+
+        completed = True
         for key, value in response.items():
             if "question" in key:
                 data[key] = value
+                # Check if there is a question that hasn't been answered yet
+                if value == "":
+                    completed = False
 
         if request.session.get("user_id"):
             ID = request.session.get("user_id")
+            db.child("user-answers").child(ID).child(QUESTIONNAIRE_DICT[chapter]).set(data)
 
-            db.child("user-answers").child(ID).set(data)
+            if completed:
+                db.child("personal-data").child(ID).child("completed-chapters").child(CH_DICT(chapter)).set(True)
 
         return redirect("../../dashboard/")
 
@@ -77,8 +122,9 @@ def save_text(request):
     if request.method == "POST":
         response = request.POST
         text = response["text"]
+        chapter = response["chapter"]
 
-        data = {"chapter 1": text}
+        data = {CH_DICT(chapter): text}
         if request.session.get("user_id"):
             ID = request.session.get("user_id")
 
@@ -92,24 +138,34 @@ def save_text(request):
 # ==================================================================================================================== #
 
 def get_user_personal_data(user_id: str) -> dict:
-    data = {
-        "first_name": db.child('personal-data').child(user_id).child("first-name").get().val(),
-        "last_name": db.child('personal-data').child(user_id).child("last-name").get().val()
-    }
+    data = dict(db.child('personal-data').child(user_id).get().val())
+    data["first_name"] = data["first-name"]
+    data["last_name"] = data["last-name"]
     return data
 
 
-def get_questionnaire() -> dict:
-    return dict(db.child("questions").get().val())
+def get_questionnaire(chapter) -> dict:
+    return dict(db.child("questionnaires").child(QUESTIONNAIRE_DICT[chapter]).get().val())
 
 
-def get_user_answers(user_id) -> dict:
-    return dict(db.child("user-answers").child(user_id).get().val())
+def get_user_answers(user_id, chapter) -> dict:
+    return dict(db.child("user-answers").child(user_id).child(QUESTIONNAIRE_DICT[chapter]).get().val())
 
 
-def get_user_text(user_id) -> dict:
-    return dict(db.child("user-book").child(user_id).get().val())
+def get_user_book_chapter(user_id, chapter) -> str:
+    return db.child("user-book").child(user_id).child(CH_DICT(chapter)).get().val()
 
+
+def set_user_profile(user_id, profile):
+    db.child("user-book").child(user_id).child("profile").set(profile)
+
+def consume_chapter_token(user_id, chapter):
+    available_tokens = db.child("personal-data").child(user_id).child("chapter-tokens").child(CH_DICT(chapter)).get().val()
+    if available_tokens == 0:
+        return False
+
+    db.child("personal-data").child(user_id).child("chapter-tokens").child(CH_DICT(chapter)).set(available_tokens-1)
+    return True
 
 # For testing purposes
 if __name__ == "__main__":
