@@ -38,7 +38,14 @@ def register(request):
         response = request.POST
         email = response["email"]
         password = response["password"]
-        authe.create_user_with_email_and_password(email=email, password=password)
+
+        # Create user
+        try:
+            authe.create_user_with_email_and_password(email=email, password=password)
+        except:
+            return render(request, "register.html", {"flag": "The username is already taken!"})
+
+        # Log the user in
         user = authe.sign_in_with_email_and_password(email=email, password=password)
 
         ID = user["localId"]
@@ -159,13 +166,16 @@ def get_user_book_chapter(user_id, chapter) -> str:
 def set_user_profile(user_id, profile):
     db.child("user-book").child(user_id).child("profile").set(profile)
 
+
 def consume_chapter_token(user_id, chapter):
-    available_tokens = db.child("personal-data").child(user_id).child("chapter-tokens").child(CH_DICT(chapter)).get().val()
+    available_tokens = db.child("personal-data").child(user_id).child("chapter-tokens").child(
+        CH_DICT(chapter)).get().val()
     if available_tokens == 0:
         return False
 
-    db.child("personal-data").child(user_id).child("chapter-tokens").child(CH_DICT(chapter)).set(available_tokens-1)
+    db.child("personal-data").child(user_id).child("chapter-tokens").child(CH_DICT(chapter)).set(available_tokens - 1)
     return True
+
 
 # For testing purposes
 if __name__ == "__main__":
