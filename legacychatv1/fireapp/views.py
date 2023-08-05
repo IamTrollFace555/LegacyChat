@@ -43,7 +43,7 @@ def register(request):
         try:
             authe.create_user_with_email_and_password(email=email, password=password)
         except:
-            return render(request, "register.html", {"flag": "The username is already taken!"})
+            return redirect("../../users/register")
 
         # Log the user in
         user = authe.sign_in_with_email_and_password(email=email, password=password)
