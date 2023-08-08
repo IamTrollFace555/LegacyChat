@@ -9,6 +9,16 @@ from fireapp.views import (
     consume_chapter_token,
 )
 
+TITLE_DICT = {
+    "0": "Building your profile",
+    "1": "The Early Years: Foundations of a Life (Chapter 1)",
+    "2": "Teenage Revelations: Navigating Change and Discovery (Chapter 2)",
+    "3": "Into Adulthood: The Awakening of Purpose (Chapter 3)",
+    "4": "Personal Milestones: Love, Family, and Personal Growth (Chapter 4)",
+    "5": "Mature Reflections: A Lifetime of Lessons Learned (Chapter 5)",
+    "6": "Golden Years: Embracing Wisdom and Legacy (Chapter 6)",
+}
+
 
 # Create your views here.
 def homepage(request):
@@ -59,7 +69,11 @@ def questionnaire(request):
             prev = prev_answers[key]
             data.append({"question_idx": temp, "question": value, "previous_answer": prev})
 
-        return render(request, "questionnaire.html", {"data": data, "chapter": chapter})
+        return render(
+                request,
+                "questionnaire.html",
+                {"data": data, "chapter": chapter, "chapter_name": TITLE_DICT[chapter]}
+        )
 
 
 def chapter_edit(request):
@@ -69,17 +83,22 @@ def chapter_edit(request):
             response = request.POST
             chapter = response["chapter"]
             try:
+                # Show the text stored in the database
                 text = get_user_book_chapter(ID, chapter)
                 if text is None or text == "":
                     raise Exception("")
             except:
+                # Consume a token and generate chapter
                 if consume_chapter_token(ID, chapter):
                     text = generate_chapter(ID, chapter)
                 else:
-                    text = "Internal Error! You ran out of tokens!"
-            print(text)
+                    # Display error text if you
+                    text = "Internal Error: You ran out of tokens!"
 
-            return render(request, "edit.html", {"text": text, "chapter": chapter})
+            return render(
+                    request,
+                    "edit.html",
+                    {"text": text, "chapter": chapter, "chapter_name": TITLE_DICT[chapter]})
 
     except:
         pass

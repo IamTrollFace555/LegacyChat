@@ -8,10 +8,18 @@ def register(request):
     flag = ""
     if "/users/register/" in prev_page:
         flag = "An user with that email already exists!"
-        print("xd")
 
     return render(request, "register.html", {"flag": flag})
 
 
 def login(request):
-    return render(request, "login.html")
+    prev_page = request.META["HTTP_REFERER"]
+    flag = ""
+    if "/users/login/" in prev_page:
+        flag = "Incorrect email or password!"
+
+    return render(request, "login.html", {"flag": flag})
+
+
+def password_recovery(request):
+    return render(request, "password_recovery.html")

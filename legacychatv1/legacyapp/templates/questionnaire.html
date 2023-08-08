@@ -6,11 +6,13 @@
     .question {
       display: none;
     }
+
+    body {font-size: x-large}
   </style>
 </head>
 <body>
 
-  <h1>Questionnaire</h1>
+  <h1>{{chapter_name}}</h1>
   <hr>
   <form action="../../fireapp/save-answers/" method="POST">{% csrf_token %}
 

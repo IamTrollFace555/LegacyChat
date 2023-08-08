@@ -3,10 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+
+    <style>
+      #flag {
+      color:#ff0000;
+
+    }
+      body {font-size: x-large}
+    </style>
+
 </head>
 <body>
   <h2>Login</h2>
-  <form action="../../fireapp/login/" method="POST">{% csrf_token %}
+  <form action="../../fireapp/login/" method="POST" id="form">{% csrf_token %}
     <div>
       <label for="email">Email:</label>
       <input type="email" id="email" name="email" required>
@@ -18,6 +27,13 @@
     <div>
       <input type="submit" value="Log in">
     </div>
+    <div id="flag">
+      <h4>{{flag}}</h4>
+    </div>
   </form>
+  {% if flag != ""%}
+  Forgot your password? Reset it <a href="../password-recovery">here</a>
+ {% endif%}
+
 </body>
 </html>

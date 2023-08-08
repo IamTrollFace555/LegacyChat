@@ -29,7 +29,7 @@ config = {
 
 # here we are doing firebase authentication
 firebase = pyrebase.initialize_app(config)
-authe = firebase.auth()
+auth = firebase.auth()
 db = firebase.database()
 
 
@@ -41,12 +41,14 @@ def register(request):
 
         # Create user
         try:
-            authe.create_user_with_email_and_password(email=email, password=password)
+            auth.create_user_with_email_and_password(email=email, password=password)
+
+        # if the user already exists
         except:
             return redirect("../../users/register")
 
         # Log the user in
-        user = authe.sign_in_with_email_and_password(email=email, password=password)
+        user = auth.sign_in_with_email_and_password(email=email, password=password)
 
         ID = user["localId"]
         first_name = response["first name"]
@@ -93,12 +95,25 @@ def login(request):
         email = response["email"]
         password = response["password"]
 
-        user = authe.sign_in_with_email_and_password(email=email, password=password)
-        user_id = user["localId"]
-        request.session["user_id"] = user_id
+        # Try to log in
+        try:
+            user = auth.sign_in_with_email_and_password(email=email, password=password)
+            user_id = user["localId"]
+            request.session["user_id"] = user_id
+        except:
+            return redirect("../../users/login")
 
     return redirect("../../dashboard/")
 
+
+def recover_password(request):
+    if request.method == "POST":
+        response = request.POST
+        email = response["email"]
+
+        auth.send_password_reset_email(email)
+
+    return render(request, "recovery_email_sent.html")
 
 def save_answers(request):
     if request.method == "POST":

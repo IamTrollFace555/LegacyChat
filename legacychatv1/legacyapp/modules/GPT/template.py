@@ -34,6 +34,7 @@ class Template:
             prompt += f"* {key}: {value}\n"
 
         prompt += f"Also, here is a brief description of the person:\n\nDescription:\n\n{person_profile}\n\nYour job " \
-                  f"is to use the answers provided by the person and the person description to write the book chapter"
+                  f"is to use the answers provided by the person and the person description to write the book " \
+                  f"chapter in the form of an autobiography"
 
         return self.writer_prompt + prompt

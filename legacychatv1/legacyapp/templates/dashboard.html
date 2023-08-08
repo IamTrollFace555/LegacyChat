@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
+    <style>
+        body {font-size: x-large}
+    </style>
 </head>
 <body>
     <h1>Welcome, {{first_name}} {{last_name}}!</h1>
@@ -151,7 +154,7 @@
     {% endif %}
 
     {% if chapter_tokens.ch1 < 4 or chapter_tokens.ch2 < 4 or chapter_tokens.ch3 < 4 or chapter_tokens.ch4 < 4 or chapter_tokens.ch5 < 4 or chapter_tokens.ch6 < 4 %}
-    You may also want to re-generate any of this chapters:<br>
+    You may also want to edit any of these generated chapters:<br>
     <ul>
         {% if completed_chapters.ch1 and chapter_tokens.ch1 < 4 and chapter_tokens.ch1 != 0 %}
         <li><label style="text-decoration: underline" for="ech1">  Chapter 1: The Early Years: Foundations of a Life </label>
@@ -178,7 +181,7 @@
         {% endif %}
     </ul>
 
-    Finally, you can preview the whole book <a href="">here!</a><br>
+    Finally, you can preview the whole book <a href="">here! (Not working yet)</a><br>
 
     {% endif %}
 
