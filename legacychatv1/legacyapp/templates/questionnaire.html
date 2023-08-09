@@ -29,6 +29,7 @@
 
       <button type="button" onclick="showPreviousQuestion()">Previous</button>
       <button type="button" onclick="showNextQuestion()">Next</button>
+      <button>Save</button>
 
       <br><br>
 
@@ -38,9 +39,12 @@
 
     </div>
     <br><br>
-
-    <button name="chapter" value={{chapter}}>Submit</button>
+    <input type="hidden" name="chapter" value="{{chapter}}">
+    <button formaction="../../fireapp/save-answers/" name="exit" value="false">Save and exit!</button>
   </form>
+
+
+
 
   <script>
     var currentQuestion = 1;
@@ -79,7 +83,11 @@
 
       questionNumberInput.value = '';
     }
-    console.log(currentQuestion)
+
+    function redirect() {
+      var url = "";
+      window.location(url);
+    }
     showQuestion(currentQuestion);
   </script>
 </body>

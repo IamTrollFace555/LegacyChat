@@ -137,7 +137,16 @@ def save_answers(request):
             if completed:
                 db.child("personal-data").child(ID).child("completed-chapters").child(CH_DICT(chapter)).set(True)
 
+
+        try:
+            if response["exit"] == "false":
+                r = requests.post('http://yourdomain/path/', data={'key': 'value'})
+                return redirect("../../dashboard/questionnaire/", chapter=chapter)
+        except:
+            print("exception!")
         return redirect("../../dashboard/")
+    
+
 
 
 def save_text(request):

@@ -5,7 +5,7 @@ An AI-Powered Chat Service to Preserve Family Wisdom
 
 # TO DO's
 
-- Add a home button to get back to the main page to the right of the next button
+- Add a home button to get back to the main page to the right of the next button (questionnaire)
 - Update Dashboard (Javier's email)
 - For Questionnaires: Submit (Save) shouldn’t take you back to the home page,
   Just save and say “saved” when done
