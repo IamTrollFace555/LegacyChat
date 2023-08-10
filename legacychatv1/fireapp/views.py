@@ -115,6 +115,7 @@ def recover_password(request):
 
     return render(request, "recovery_email_sent.html")
 
+
 def save_answers(request):
     if request.method == "POST":
         response = request.POST
@@ -137,7 +138,6 @@ def save_answers(request):
             if completed:
                 db.child("personal-data").child(ID).child("completed-chapters").child(CH_DICT(chapter)).set(True)
 
-
         try:
             if response["exit"] == "false":
                 r = requests.post('http://yourdomain/path/', data={'key': 'value'})
@@ -145,8 +145,6 @@ def save_answers(request):
         except:
             print("exception!")
         return redirect("../../dashboard/")
-    
-
 
 
 def save_text(request):
