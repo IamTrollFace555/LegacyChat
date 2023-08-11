@@ -14,7 +14,7 @@
 
   <h1>{{chapter_name}}</h1>
   <hr>
-  <form action="" method="POST">{% csrf_token %}
+  <form action="../../fireapp/save-answers/" method="POST">{% csrf_token %}
 
     <!-- FOR loop that creates each question -->
     {% for question in data %}
@@ -29,7 +29,7 @@
 
       <button type="button" onclick="showPreviousQuestion()">Previous</button>
       <button type="button" onclick="showNextQuestion()">Next</button>
-      <button type="button" onclick="saveAnswers()">Save</button>
+      <button>Save</button>
 
       <br><br>
 
@@ -81,34 +81,14 @@
         showQuestion(currentQuestion);
       }
 
-
       questionNumberInput.value = '';
     }
 
-    function saveAnswers() {
-      var form = document.querySelector('form');
-      var formData = new FormData(form);
-
-      var xhr = new XMLHttpRequest();
-      xhr.open("POST", "../../fireapp/save-answers/", true);
-
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          if (xhr.status === 200) {
-            // Successful response
-            console.log(xhr.responseText);
-          } else {
-            // Error handling
-            console.error("Error: " + xhr.status);
-          }
-        }
-      };
-
-      xhr.send(formData);
+    function redirect() {
+      var url = "";
+      window.location(url);
     }
-
     showQuestion(currentQuestion);
-
   </script>
 </body>
 </html>
