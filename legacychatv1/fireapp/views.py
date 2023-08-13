@@ -157,7 +157,7 @@ def save_text(request):
         if request.session.get("user_id"):
             ID = request.session.get("user_id")
 
-            db.child("user-book").child(ID).set(data)
+            db.child("user-book").child(ID).update(data)
 
         return redirect("../../dashboard/")
 
@@ -166,27 +166,43 @@ def save_text(request):
 # Helper functions
 # ==================================================================================================================== #
 
-def get_user_personal_data(user_id: str) -> dict:
-    data = dict(db.child('personal-data').child(user_id).get().val())
-    data["first_name"] = data["first-name"]
-    data["last_name"] = data["last-name"]
-    return data
+def get_user_personal_data(user_id: str) -> dict or None:
+    try:
+        data = dict(db.child('personal-data').child(user_id).get().val())
+        data["first_name"] = data["first-name"]
+        data["last_name"] = data["last-name"]
+        return data
+    except:
+        return None
 
 
-def get_questionnaire(chapter) -> dict:
-    return dict(db.child("questionnaires").child(QUESTIONNAIRE_DICT[chapter]).get().val())
+def get_questionnaire(chapter) -> dict or None:
+    try:
+        return dict(db.child("questionnaires").child(QUESTIONNAIRE_DICT[chapter]).get().val())
+    except:
+        return None
 
 
-def get_user_answers(user_id, chapter) -> dict:
-    return dict(db.child("user-answers").child(user_id).child(QUESTIONNAIRE_DICT[chapter]).get().val())
+def get_user_answers(user_id, chapter) -> dict or None:
+    try:
+        return dict(db.child("user-answers").child(user_id).child(QUESTIONNAIRE_DICT[chapter]).get().val())
+    except:
+        return None
 
 
-def get_user_book_chapter(user_id, chapter) -> str:
-    return db.child("user-book").child(user_id).child(CH_DICT(chapter)).get().val()
+def get_user_book_chapter(user_id, chapter) -> str or None:
+    try:
+        return db.child("user-book").child(user_id).child(CH_DICT(chapter)).get().val()
+    except:
+        return None
 
 
 def set_user_profile(user_id, profile):
-    db.child("user-book").child(user_id).child("profile").set(profile)
+    data = {"profile": profile}
+    for idx in range(1, len(QUESTIONNAIRE_DICT)):
+        data[CH_DICT(str(idx))] = ""
+
+    db.child("user-book").child(user_id).set(data)
 
 
 def consume_chapter_token(user_id, chapter):
@@ -197,6 +213,61 @@ def consume_chapter_token(user_id, chapter):
 
     db.child("personal-data").child(user_id).child("chapter-tokens").child(CH_DICT(chapter)).set(available_tokens - 1)
     return True
+
+
+def get_user_dashboard_table(user_id):
+    # Pictures
+    data = {
+        "chapter0": {"pictures": 0},
+        "chapter1": {"pictures": 0},
+        "chapter2": {"pictures": 0},
+        "chapter3": {"pictures": 0},
+        "chapter4": {"pictures": 0},
+        "chapter5": {"pictures": 0},
+        "chapter6": {"pictures": 0},
+    }
+
+    for chapter in range(len(QUESTIONNAIRE_DICT)):
+        ch = str(chapter)
+
+        # Questions
+        answers = get_user_answers(user_id, ch)
+
+        if answers is None:
+            data[f"chapter{ch}"]["questions"] = "Go"
+            finished = False
+
+        else:
+            # Check answers and decide status based on them
+            started = False
+            finished = True
+
+            for ans in answers.values():
+                print(ans)
+                if ans == "":
+                    finished = False
+                    print("HEY THERE!")
+                else:
+                    started = True
+
+            if finished:
+                data[f"chapter{ch}"]["questions"] = "Complete"
+            elif started:
+                data[f"chapter{ch}"]["questions"] = "Partial"
+            else:
+                data[f"chapter{ch}"]["questions"] = "Go"
+
+        # Chapter Draft
+        text = get_user_book_chapter(user_id, ch)
+        if text is None or text == "":
+            if finished:
+                data[f"chapter{ch}"]["draft"] = "Ready to write"
+            else:
+                data[f"chapter{ch}"]["draft"] = "Waiting answers"
+        else:
+            data[f"chapter{ch}"]["draft"] = "Complete"
+
+    return data
 
 
 # For testing purposes

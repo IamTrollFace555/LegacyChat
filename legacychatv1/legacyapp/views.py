@@ -7,6 +7,7 @@ from fireapp.views import (
     get_user_book_chapter,
     set_user_profile,
     consume_chapter_token,
+    get_user_dashboard_table,
 )
 
 TITLE_DICT = {
@@ -45,6 +46,8 @@ def dashboard(request):
         data["chosen_option"] = data["chosen-option"]
         data["chapter_tokens"] = data["chapter-tokens"]
 
+        data["table"] = get_user_dashboard_table(user_id)
+
         return render(request, "dashboard.html", data)
 
 
@@ -65,14 +68,15 @@ def questionnaire(request):
 
         data = []
         for (key, value) in questions.items():
-            temp = key[8:]  # Since the keys are in the form questionX where X is the question number, key[8:] just removes the 'question' part
+            temp = key[
+                   8:]  # Since the keys are in the form questionX where X is the question number, key[8:] just removes the 'question' part
             prev = prev_answers[key]
             data.append({"question_idx": temp, "question": value, "previous_answer": prev})
 
         return render(
-                request,
-                "questionnaire.html",
-                {"data": data, "chapter": chapter, "chapter_name": TITLE_DICT[chapter]}
+            request,
+            "questionnaire.html",
+            {"data": data, "chapter": chapter, "chapter_name": TITLE_DICT[chapter]}
         )
 
 
@@ -96,9 +100,9 @@ def chapter_edit(request):
                     text = "Internal Error: You ran out of tokens!"
 
             return render(
-                    request,
-                    "edit.html",
-                    {"text": text, "chapter": chapter, "chapter_name": TITLE_DICT[chapter]})
+                request,
+                "edit.html",
+                {"text": text, "chapter": chapter, "chapter_name": TITLE_DICT[chapter]})
 
     except:
         pass

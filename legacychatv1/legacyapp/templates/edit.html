@@ -4,9 +4,71 @@
     <title>Edit your chapter</title>
     <style>
         body {font-size: x-large}
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+
+        /* Center the content on the page */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Style headings */
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        /* Style links */
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Style buttons */
+        button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Add spacing between elements */
+        p, ul, ol {
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical; /* Allow vertical resizing */
+            font-family: "Times New Roman", Times, serif; /* Set a specific font */
+        }
     </style>
 </head>
 <body>
+<div class="container">
     <h1>Edit Your Chapter!</h1>
     <h2>{{chapter_name}}</h2>
 
@@ -15,5 +77,7 @@
         <textarea id="text" name="text" rows="30" cols="200">{{text}}</textarea><br><br>
         <button type="submit" id="chapter" name="chapter" value="{{chapter}}"> Save!</button>
     </form>
+
+</div>
 </body>
 </html>

@@ -6,9 +6,65 @@
     <title>Legacy Chat</title>
     <style>
         body {font-size: x-large}
+
+        /* Reset some default styles to provide a consistent baseline */
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+
+        /* Center the content on the page */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Style headings */
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        /* Style links */
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Add spacing between elements */
+        p, ul, ol {
+            margin-bottom: 15px;
+        }
+
+        /* Style images */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Style textareas */
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical; /* Allow vertical resizing */
+            font-family: "Times New Roman", Times, serif; /* Set a specific font */
+        }
     </style>
 </head>
 <body>
+<div class="container">
+
     <h1>Legacy Chat</h1>
 
     <h2>Preserving Family Wisdom</h2>
@@ -48,11 +104,11 @@
         We are delighted to embark on this journey of preserving your personal history
          through the art of memoir writing. Should you have any questions or
          require further assistance, please don't hesitate to reach out. Happy writing!
-    </p><br><br>
+    </p><br>
 
-    <p>The first step is to create an account! <a href="../users/register">Register here</a></p><br><br>
+    <p>The first step is to create an account! <a href="../users/register">Register here</a></p>
     <p>Already have an account?  <a href="../users/login">Login here</a></p><br><br>
 
-
+</div>
 </body>
 </html>

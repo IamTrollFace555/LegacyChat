@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        body {font-size: x-large}
+
+        /* Add padding to table cells */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        /* Add spacing between rows */
+        tr {
+            margin-bottom: 10px;
+        }
+
+        /* Add spacing between columns */
+        th:not(:first-child), td:not(:first-child) {
+            border-left: 10px solid transparent;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome, {{first_name}} {{last_name}}!</h1>
+
+    {% if not completed_chapters.profile %}
+    <h2>This is where your journey begins!</h2><hr>
+    <p> The first step is to complete a questionnaire to help us build your profile.
+        Please make sure to answer in an accurate and meaningful way, this will help our AI model to generate better results</p>
+
+    <form action="questionnaire/" method="POST">{% csrf_token %}
+        <button name="chapter" value="0">Start building my profile!</button>
+    </form>
+
+    {% elif not completed_chapters.ch1 and not completed_chapters.ch2 and not completed_chapters.ch3 and not completed_chapters.ch4 and not completed_chapters.ch5 and not completed_chapters.ch6 %}
+
+    <h2>It's now time to write your first chapter!</h2><hr>
+    <p>  Now you have to answer chapter-specific questions. Select a chapter from the following to start! </p>
+
+    <form style="display: none" action="questionnaire/" method="POST">{% csrf_token %}
+        <button type="submit" id="ch1" name="chapter" value = "1"> </button>
+        <button type="submit" id="ch2" name="chapter" value = "2"> </button>
+        <button type="submit" id="ch3" name="chapter" value = "3"> </button>
+        <button type="submit" id="ch4" name="chapter" value = "4"> </button>
+        <button type="submit" id="ch5" name="chapter" value = "5"> </button>
+        <button type="submit" id="ch6" name="chapter" value = "6"> </button>
+    </form>
+    <ul>
+        <li><label style="text-decoration: underline" for="ch1">  Chapter 1: The Early Years: Foundations of a Life </label>
+        <li><label style="text-decoration: underline" for="ch2">  Chapter 2: Teenage Revelations: Navigating Change and Discovery </label>
+        <li>Chapter 3: Into Adulthood: The Awakening of Purpose
+        <li>Chapter 4: Personal Milestones: Love, Family, and Personal Growth
+        <li>Chapter 5: Mature Reflections: A Lifetime of Lessons Learned
+        <li>Chapter 6: Golden Years: Embracing Wisdom and Legacy
+    </ul>
+
+    <button onclick="window.location.href='chapter-edit/'">Edit my text!</button>
+
+    {% elif not completed_chapters.ch1 or not completed_chapters.ch2 or completed_chapters.ch3 or not completed_chapters.ch4 or not completed_chapters.ch5 or not completed_chapters.ch6 %}
+    <h2>Continue where you left off!</h2><hr>
+    <br><br>
+    <h3>Question answering:</h3>
+    The following chapters have not had all of its questions solved:
+
+    <form style="display: none" action="questionnaire/" method="POST">{% csrf_token %}
+        <button type="submit" id="ch1" name="chapter" value = "1"> </button>
+        <button type="submit" id="ch2" name="chapter" value = "2"> </button>
+        <button type="submit" id="ch3" name="chapter" value = "3"> </button>
+        <button type="submit" id="ch4" name="chapter" value = "4"> </button>
+        <button type="submit" id="ch5" name="chapter" value = "5"> </button>
+        <button type="submit" id="ch6" name="chapter" value = "6"> </button>
+    </form>
+
+    <ul>
+        {% if not completed_chapters.ch1 %}
+        <li><label style="text-decoration: underline" for="ch1">  Chapter 1: The Early Years: Foundations of a Life </label>
+        {% endif %}
+
+        {% if not completed_chapters.ch2 %}
+        <li><label style="text-decoration: underline" for="ch2">  Chapter 2: Teenage Revelations: Navigating Change and Discovery </label>
+        {% endif %}
+
+        {% if not completed_chapters.ch3 %}
+        <li>Chapter 3: Into Adulthood: The Awakening of Purpose
+        {% endif %}
+
+        {% if not completed_chapters.ch4 %}
+        <li>Chapter 4: Personal Milestones: Love, Family, and Personal Growth
+        {% endif %}
+
+        {% if not completed_chapters.ch5 %}
+        <li>Chapter 5: Mature Reflections: A Lifetime of Lessons Learned
+        {% endif %}
+
+        {% if not completed_chapters.ch6 %}
+        <li>Chapter 6: Golden Years: Embracing Wisdom and Legacy
+        {% endif %}
+    </ul>
+
+    You can also change the answers of previously completed questionnaires
+
+    <ul>
+        {% if completed_chapters.ch1 %}
+        <li><label style="text-decoration: underline" for="ch1">  Chapter 1: The Early Years: Foundations of a Life </label>
+        {% endif %}
+
+        {% if completed_chapters.ch2 %}
+        <li><label style="text-decoration: underline" for="ch2">  Chapter 2: Teenage Revelations: Navigating Change and Discovery </label>
+        {% endif %}
+
+        {% if completed_chapters.ch3 %}
+        <li>Chapter 3: Into Adulthood: The Awakening of Purpose
+        {% endif %}
+
+        {% if completed_chapters.ch4 %}
+        <li>Chapter 4: Personal Milestones: Love, Family, and Personal Growth
+        {% endif %}
+
+        {% if completed_chapters.ch5 %}
+        <li>Chapter 5: Mature Reflections: A Lifetime of Lessons Learned
+        {% endif %}
+
+        {% if completed_chapters.ch6 %}
+        <li>Chapter 6: Golden Years: Embracing Wisdom and Legacy
+        {% endif %}
+    </ul>
+
+    <br><br>
+    <h3>Chapter generation:</h3>
+
+    <form style="display: none" action="chapter-edit/" method="POST">{% csrf_token %}
+        <button type="submit" id="ech1" name="chapter" value = "1"> </button>
+        <button type="submit" id="ech2" name="chapter" value = "2"> </button>
+        <button type="submit" id="ech3" name="chapter" value = "3"> </button>
+        <button type="submit" id="ech4" name="chapter" value = "4"> </button>
+        <button type="submit" id="ech5" name="chapter" value = "5"> </button>
+        <button type="submit" id="ech6" name="chapter" value = "6"> </button>
+    </form>
+
+    {% if  completed_chapters.ch1 and chapter_tokens.ch1 == 4 or completed_chapters.ch2 and chapter_tokens.ch2 == 4 or completed_chapters.ch3 and chapter_tokens.ch3 == 4 or completed_chapters.ch4 and chapter_tokens.ch4 == 4 or completed_chapters.ch5 and chapter_tokens.ch5 == 4 or completed_chapters.ch6 and chapter_tokens.ch6 == 4 %}
+    You can now generate your chapters! choose one to start:<br>
+    <ul>
+        {% if completed_chapters.ch1 and chapter_tokens.ch1 == 4 %}
+        <li><label style="text-decoration: underline" for="ech1">  Chapter 1: The Early Years: Foundations of a Life </label>
+        {% endif %}
+
+        {% if completed_chapters.ch2 and chapter_tokens.ch2 == 4 %}
+        <li><label style="text-decoration: underline" for="ech2">  Chapter 2: Teenage Revelations: Navigating Change and Discovery </label>
+        {% endif %}
+
+        {% if completed_chapters.ch3 and chapter_tokens.ch3 == 4 %}
+        <li>Chapter 3: Into Adulthood: The Awakening of Purpose
+        {% endif %}
+
+        {% if completed_chapters.ch4 and chapter_tokens.ch4 == 4 %}
+        <li>Chapter 4: Personal Milestones: Love, Family, and Personal Growth
+        {% endif %}
+
+        {% if completed_chapters.ch5 and chapter_tokens.ch5 == 4 %}
+        <li>Chapter 5: Mature Reflections: A Lifetime of Lessons Learned
+        {% endif %}
+
+        {% if completed_chapters.ch6 and chapter_tokens.ch6 == 4 %}
+        <li>Chapter 6: Golden Years: Embracing Wisdom and Legacy
+        {% endif %}
+    </ul>
+    {% endif %}
+
+    {% if chapter_tokens.ch1 < 4 or chapter_tokens.ch2 < 4 or chapter_tokens.ch3 < 4 or chapter_tokens.ch4 < 4 or chapter_tokens.ch5 < 4 or chapter_tokens.ch6 < 4 %}
+    You may also want to edit any of these generated chapters:<br>
+    <ul>
+        {% if completed_chapters.ch1 and chapter_tokens.ch1 < 4 and chapter_tokens.ch1 != 0 %}
+        <li><label style="text-decoration: underline" for="ech1">  Chapter 1: The Early Years: Foundations of a Life </label>
+        {% endif %}
+
+        {% if completed_chapters.ch2 and chapter_tokens.ch2 < 4 and chapter_tokens.ch2 != 0 %}
+        <li><label style="text-decoration: underline" for="ech2">  Chapter 2: Teenage Revelations: Navigating Change and Discovery </label>
+        {% endif %}
+
+        {% if completed_chapters.ch3 and chapter_tokens.ch3 < 4 and chapter_tokens.ch3 != 0 %}
+        <li>Chapter 3: Into Adulthood: The Awakening of Purpose
+        {% endif %}
+
+        {% if completed_chapters.ch4 and chapter_tokens.ch4 < 4 and chapter_tokens.ch4 != 0 %}
+        <li>Chapter 4: Personal Milestones: Love, Family, and Personal Growth
+        {% endif %}
+
+        {% if completed_chapters.ch5 and chapter_tokens.ch5 < 4 and chapter_tokens.ch5 != 0 %}
+        <li>Chapter 5: Mature Reflections: A Lifetime of Lessons Learned
+        {% endif %}
+
+        {% if completed_chapters.ch6 and chapter_tokens.ch6 < 4 and chapter_tokens.ch6 != 0 %}
+        <li>Chapter 6: Golden Years: Embracing Wisdom and Legacy
+        {% endif %}
+    </ul>
+
+    Finally, you can preview the whole book <a href="">here! (Not working yet)</a><br>
+
+    {% endif %}
+
+
+    {% endif %}
+
+
+
+    <table>
+        <tr>
+            <th>Chapter</th>
+            <th>Questions</th>
+            <th>Pictures</th>
+            <th>Chapter Draft</th>
+        </tr>
+
+        <tr>
+            <td>Author Foreword</td>
+            <td>{{table.chapter0.questions}}</td>
+            <td>{{table.chapter0.pictures}}</td>
+            <td>{{table.chapter0.draft}}</td>
+        </tr>
+
+        <tr>
+            <td>Chapter 1</td>
+            <td>{{table.chapter1.questions}}</td>
+            <td>{{table.chapter1.pictures}}</td>
+            <td>{{table.chapter1.draft}}</td>
+        </tr>
+
+        <tr>
+            <td>Chapter 2</td>
+            <td>{{table.chapter2.questions}}</td>
+            <td>{{table.chapter2.pictures}}</td>
+            <td>{{table.chapter2.draft}}</td>
+        </tr>
+
+        <tr>
+            <td>Chapter 3</td>
+            <td>{{table.chapter3.questions}}</td>
+            <td>{{table.chapter3.pictures}}</td>
+            <td>{{table.chapter3.draft}}</td>
+        </tr>
+
+        <tr>
+            <td>Chapter 4</td>
+            <td>{{table.chapter4.questions}}</td>
+            <td>{{table.chapter4.pictures}}</td>
+            <td>{{table.chapter4.draft}}</td>
+        </tr>
+
+        <tr>
+            <td>Chapter 5</td>
+            <td>{{table.chapter5.questions}}</td>
+            <td>{{table.chapter5.pictures}}</td>
+            <td>{{table.chapter5.draft}}</td>
+        </tr>
+
+        <tr>
+            <td>Chapter 6</td>
+            <td>{{table.chapter6.questions}}</td>
+            <td>{{table.chapter6.pictures}}</td>
+            <td>{{table.chapter6.draft}}</td>
+        </tr>
+
+    </table>
+</body>
+</html>
