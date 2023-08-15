@@ -104,6 +104,7 @@
     <div>
       <label for="password">Password:</label>
       <input type="password" id="password" name="password" required>
+      <button type="button" id="togglePassword">See Password</button>
     </div>
     <div>
       <input type="submit" value="Log in">
@@ -115,6 +116,23 @@
   {% if flag != ""%}
   Forgot your password? Reset it <a href="../password-recovery">here</a>
  {% endif%}
+
+
+<script>
+const togglePasswordButton = document.getElementById("togglePassword");
+const passwordInput = document.getElementById("password");
+
+togglePasswordButton.addEventListener("click", function() {
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    togglePasswordButton.textContent = "Hide Password";
+  } else {
+    passwordInput.type = "password";
+    togglePasswordButton.textContent = "See Password";
+  }
+});
+</script>
+
 
 </div>
 </body>

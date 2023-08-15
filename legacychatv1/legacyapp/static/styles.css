@@ -1,3 +1,5 @@
+body {font-size: x-large}
+
 /* Reset some default styles to provide a consistent baseline */
 html, body {
     margin: 0;
@@ -75,4 +77,23 @@ input {
   border-radius: 4px;
   resize: vertical; /* Allow vertical resizing */
   font-family: "Times New Roman", Times, serif; /* Set a specific font */
+}
+
+/* Style for the table */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* Style for the table cells (data cells and header cells) */
+th, td {
+    border: 1px solid black; /* Add a 1px solid black border to all cells */
+    padding: 8px;
+    text-align: left;
+    background-color: #d1eaff;
+}
+
+/* Style for the table header */
+th {
+    background-color: #1c97c3; /* Light gray background for the header cells */
 }

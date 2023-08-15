@@ -243,10 +243,8 @@ def get_user_dashboard_table(user_id):
             finished = True
 
             for ans in answers.values():
-                print(ans)
                 if ans == "":
                     finished = False
-                    print("HEY THERE!")
                 else:
                     started = True
 

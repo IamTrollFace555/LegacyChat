@@ -110,6 +110,7 @@
     <div>
       <label for="confirm-password">Confirm Password:</label>
       <input type="password" id="confirm-password" name="confirm-password" onChange="onChange()" required>
+      <button type="button" id="togglePassword">See Password</button>
     </div>
     <div>
       <input type="submit" value="Register">
@@ -127,6 +128,20 @@
         confirm.setCustomValidity('Passwords do not match');
       }
     }
+
+    const togglePasswordButton = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+    const passwordInput = document.getElementById("password");
+
+    togglePasswordButton.addEventListener("click", function() {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        togglePasswordButton.textContent = "Hide Password";
+      } else {
+        passwordInput.type = "password";
+        togglePasswordButton.textContent = "See Password";
+  }
+});
   </script>
 
 </div>
