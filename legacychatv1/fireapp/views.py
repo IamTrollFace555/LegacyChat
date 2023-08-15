@@ -67,6 +67,7 @@ def register(request):
                 "ch6": False,
             },
             "chapter-tokens": {
+                "profile": 4,
                 "ch1": 4,
                 "ch2": 4,
                 "ch3": 4,
@@ -85,6 +86,12 @@ def register(request):
         }
 
         db.child("personal-data").child(ID).set(data)
+
+        data2 = {"profile": ""}
+        for idx in range(1, len(QUESTIONNAIRE_DICT)):
+            data2[CH_DICT(str(idx))] = ""
+
+        db.child("user-book").child(ID).set(data2)
 
         return render(request, "thankyou.html")
 
@@ -140,10 +147,10 @@ def save_answers(request):
 
         try:
             if response["exit"] == "false":
-                r = requests.post('http://yourdomain/path/', data={'key': 'value'})
                 return redirect("../../dashboard/questionnaire/", chapter=chapter)
         except:
             print("exception!")
+
         return redirect("../../dashboard/")
 
 
@@ -197,14 +204,6 @@ def get_user_book_chapter(user_id, chapter) -> str or None:
         return None
 
 
-def set_user_profile(user_id, profile):
-    data = {"profile": profile}
-    for idx in range(1, len(QUESTIONNAIRE_DICT)):
-        data[CH_DICT(str(idx))] = ""
-
-    db.child("user-book").child(user_id).set(data)
-
-
 def consume_chapter_token(user_id, chapter):
     available_tokens = db.child("personal-data").child(user_id).child("chapter-tokens").child(
         CH_DICT(chapter)).get().val()
@@ -212,6 +211,7 @@ def consume_chapter_token(user_id, chapter):
         return False
 
     db.child("personal-data").child(user_id).child("chapter-tokens").child(CH_DICT(chapter)).set(available_tokens - 1)
+
     return True
 
 
