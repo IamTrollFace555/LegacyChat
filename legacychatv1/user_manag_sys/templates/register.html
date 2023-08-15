@@ -131,17 +131,19 @@
 
     const togglePasswordButton = document.getElementById("togglePassword");
     const passwordInput = document.getElementById("password");
-    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirm-password");
 
     togglePasswordButton.addEventListener("click", function() {
       if (passwordInput.type === "password") {
         passwordInput.type = "text";
+        confirmPasswordInput.type = "text"
         togglePasswordButton.textContent = "Hide Password";
       } else {
         passwordInput.type = "password";
+        confirmPasswordInput.type = "password"
         togglePasswordButton.textContent = "See Password";
-  }
-});
+      }
+    });
   </script>
 
 </div>

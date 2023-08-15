@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .modules.GPT.openai_API import generate_chapter
 from fireapp.views import (
     get_user_personal_data,
@@ -96,8 +96,6 @@ def chapter_edit(request):
                     # Display error text if you
                     text = "Internal Error: You ran out of tokens!"
 
-
-
             return render(
                 request,
                 "edit.html",
@@ -105,3 +103,11 @@ def chapter_edit(request):
 
     except:
         pass
+
+
+def logout(request):
+    try:
+        del request.session['user_id']
+    except KeyError:
+        pass
+    return redirect("../../")
