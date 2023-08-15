@@ -3,65 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <style>
-        body {font-size: x-large}
-
-        /* Style for the table */
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        /* Style for the table cells (data cells and header cells) */
-        th, td {
-            border: 1px solid black; /* Add a 1px solid black border to all cells */
-            padding: 8px;
-            text-align: left;
-        }
-
-        /* Style for the table header */
-        th {
-            background-color: #f2f2f2; /* Light gray background for the header cells */
-        }
-
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background-color: #f5f5f5;
-        }
-
-        /* Center the content on the page */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 30px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Style headings */
-        h1, h2, h3 {
-            color: #333;
-        }
-
-        /* Style links */
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* Add spacing between elements */
-        p, ul, ol {
-            margin-bottom: 15px;
-        }
-    </style>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
 </head>
 <body>
 <div class="container">
@@ -87,17 +30,17 @@
 
         <tr>
             <td>Chapter 1: The Early Years</td>
-            <td><label style="text-decoration: underline" for="ch1">{{table.chapter1.questions}}</label></td>
+            <td><label style="text-decoration: underline; color: #007bff" for="ch1">{{table.chapter1.questions}}</label></td>
             <td>{{table.chapter1.pictures}}</td>
-            <td><label style="text-decoration: underline" for="ech1">{{table.chapter1.draft}}</label></td>
+            <td><label style="text-decoration: underline; color: #007bff" for="ech1">{{table.chapter1.draft}}</label></td>
 
         </tr>
 
         <tr>
             <td>Chapter 2: Teenage Revelations</td>
-            <td><label style="text-decoration: underline" for="ch2">{{table.chapter2.questions}}</label></td>
+            <td><label style="text-decoration: underline; color: #007bff" for="ch2">{{table.chapter2.questions}}</label></td>
             <td>{{table.chapter2.pictures}}</td>
-            <td><label style="text-decoration: underline" for="ech2">{{table.chapter2.draft}}</label></td>
+            <td><label style="text-decoration: underline; color: #007bff" for="ech2">{{table.chapter2.draft}}</label></td>
         </tr>
 
         <tr>
