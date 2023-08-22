@@ -108,7 +108,7 @@
 <div class="container">
 
   <h1>{{chapter_name |safe}}</h1>
-  <h2>{{subchapter}}</h2>
+  <h2>{{subchapter_name}}</h2>
   <hr>
   <form action="" method="POST">{% csrf_token %}
 
@@ -123,7 +123,9 @@
     <br>
     <div>
 
-      <p id="question_list"></p>
+      {% if subchapter != "sch0" %}
+        <p id="question_list"></p>
+      {% endif %}
 
       <button type="button" onclick="showPreviousQuestion()">Previous</button>
       <button type="button" onclick="showNextQuestion()">Next</button>

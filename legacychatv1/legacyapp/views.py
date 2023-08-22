@@ -55,16 +55,23 @@ def questionnaire(request):
     if request.method == "POST":
         response = request.POST
         chapter = str(response["chapter"])
-        subchapter = str(response["subchapter"])
+
+        questions = get_questionnaire(chapter)
+
+        try:
+            subchapter = str(response["subchapter"])
+            idxs = SUBCHAPTER_QUESTIONS[CH_DICT(chapter)][subchapter]
+
+        except:
+            idxs = [i for i in range(1, len(questions) + 1)]
+            subchapter = "sch0"
 
         # Index managing
-        idxs = SUBCHAPTER_QUESTIONS[CH_DICT(chapter)][subchapter]
         indices = ""
         for i in idxs:
             indices += str(i) + " "
         indices = indices[:-1]
 
-        questions = get_questionnaire(chapter)
 
         try:
             ID = request.session.get("user_id")
@@ -86,13 +93,19 @@ def questionnaire(request):
                 prev = ""
             data.append({"question_idx": temp, "question": value, "previous_answer": prev})
 
+        if chapter != "0":
+            subchapter_name = SUBCHAPTER_LIST[CH_DICT(chapter)][subchapter]
+        else:
+            subchapter_name = ""
+
         return render(
             request,
             "questionnaire.html",
             {"data": data,
              "chapter": chapter,
+             "subchapter": subchapter,
              "chapter_name": TITLE_DICT[chapter],
-             "subchapter_name": SUBCHAPTER_LIST[CH_DICT(chapter)][subchapter],
+             "subchapter_name": subchapter_name,
              "indices": indices,
              "indices_int": idxs}
         )
