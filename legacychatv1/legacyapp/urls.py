@@ -7,4 +7,5 @@ urlpatterns = [
     path("dashboard/questionnaire/", views.questionnaire, name="questionnaire"),
     path("dashboard/chapter-edit/", views.chapter_edit, name="chapter-edit"),
     path("dashboard/logout/", views.logout, name="logout"),
+    path("dashboard/choose-subchapter/", views.choose_subchapter, name="choose-subchapter"),
 ]

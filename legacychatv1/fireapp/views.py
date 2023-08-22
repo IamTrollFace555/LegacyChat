@@ -98,6 +98,7 @@ def register(request):
 
 def login(request):
     if request.method == "POST":
+        print("IN!")
         response = request.POST
         email = response["email"]
         password = response["password"]
@@ -149,7 +150,7 @@ def save_answers(request):
             if response["exit"] == "false":
                 return redirect("../../dashboard/questionnaire/", chapter=chapter)
         except:
-            print("exception!")
+            pass
 
         return redirect("../../dashboard/")
 

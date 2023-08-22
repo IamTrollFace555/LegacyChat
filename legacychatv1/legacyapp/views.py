@@ -9,25 +9,14 @@ from fireapp.views import (
     get_user_dashboard_table,
 )
 
-TITLE_DICT = {
-    "0": "Building your profile",
-    "1": "The Early Years: Foundations of a Life (Chapter 1)",
-    "2": "Teenage Revelations: Navigating Change and Discovery (Chapter 2)",
-    "3": "Into Adulthood: The Awakening of Purpose (Chapter 3)",
-    "4": "Personal Milestones: Love, Family, and Personal Growth (Chapter 4)",
-    "5": "Mature Reflections: A Lifetime of Lessons Learned (Chapter 5)",
-    "6": "Golden Years: Embracing Wisdom and Legacy (Chapter 6)",
-}
+from .modules.titles import (
+    TITLE_DICT,
+    SHORT_NAMES,
+    SUBCHAPTER_LIST,
+    CH_DICT,
+    SUBCHAPTER_QUESTIONS,
 
-SHORT_NAMES = [
-    ("chapter0", "Author Foreword"),
-    ("chapter1", "The Early Years"),
-    ("chapter2", "Teenage Revelations"),
-    ("chapter3", "Into Adulthood"),
-    ("chapter4", "Personal Milestones"),
-    ("chapter5", "Mature Reflections"),
-    ("chapter6", "Golden Years"),
-]
+)
 
 
 # Create your views here.
@@ -46,10 +35,34 @@ def dashboard(request):
         return render(request, "dashboard.html", data)
 
 
+def choose_subchapter(request):
+    if request.method == "POST":
+        response = request.POST
+        chapter = response["chapter"]
+
+        return render(
+            request,
+            "choose-subchapter.html",
+            dict(subchapters=SUBCHAPTER_LIST[CH_DICT(chapter)],
+                 counter=["sch" + str(i) for i in range(1, len(SUBCHAPTER_LIST[CH_DICT(chapter)]))],
+                 chapter_name=TITLE_DICT[chapter],
+                 chapter=chapter,
+                 )
+        )
+
+
 def questionnaire(request):
     if request.method == "POST":
         response = request.POST
         chapter = str(response["chapter"])
+        subchapter = str(response["subchapter"])
+
+        # Index managing
+        idxs = SUBCHAPTER_QUESTIONS[CH_DICT(chapter)][subchapter]
+        indices = ""
+        for i in idxs:
+            indices += str(i) + " "
+        indices = indices[:-1]
 
         questions = get_questionnaire(chapter)
 
@@ -67,13 +80,21 @@ def questionnaire(request):
         for (key, value) in questions.items():
             temp = key[8:]  # Since the keys are in the form questionX where X is the question number, key[8:] just
             # removes the 'question' part
-            prev = prev_answers[key]
+            try:
+                prev = prev_answers[key]
+            except:
+                prev = ""
             data.append({"question_idx": temp, "question": value, "previous_answer": prev})
 
         return render(
             request,
             "questionnaire.html",
-            {"data": data, "chapter": chapter, "chapter_name": TITLE_DICT[chapter]}
+            {"data": data,
+             "chapter": chapter,
+             "chapter_name": TITLE_DICT[chapter],
+             "subchapter_name": SUBCHAPTER_LIST[CH_DICT(chapter)][subchapter],
+             "indices": indices,
+             "indices_int": idxs}
         )
 
 

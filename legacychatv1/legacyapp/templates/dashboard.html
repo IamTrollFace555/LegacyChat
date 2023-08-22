@@ -3,8 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+
+    <style>
+    body {font-size: x-large}
+
+    /* Reset some default styles to provide a consistent baseline */
+    html, body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        background-color: #f5f5f5;
+    }
+
+    /* Center the content on the page */
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style headings */
+    h1, h2, h3 {
+        color: #333;
+    }
+
+    /* Style links */
+    a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    /* Style buttons */
+    button {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Add spacing between elements */
+    p, ul, ol {
+        margin-bottom: 15px;
+    }
+
+    /* Style images */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Style textareas */
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical; /* Allow vertical resizing */
+        font-family: "Times New Roman", Times, serif; /* Set a specific font */
+    }
+
+    /* Style inputs */
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical; /* Allow vertical resizing */
+      font-family: "Times New Roman", Times, serif; /* Set a specific font */
+    }
+
+    /* Style for the table */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    /* Style for the table cells (data cells and header cells) */
+    th, td {
+        border: 1px solid black; /* Add a 1px solid black border to all cells */
+        padding: 8px;
+        text-align: left;
+        background-color: #d1eaff;
+    }
+
+    /* Style for the table header */
+    th {
+        background-color: #1c97c3; /* Light gray background for the header cells */
+    }
+
+    </style>
 </head>
 <body>
 <div class="container">
@@ -38,63 +139,14 @@
             {% endwith %}
         {% endfor %}
 
-        {% comment %}
-        <tr>
-            <td>Author Foreword</td>
-            <td><label style="text-decoration: underline; color: #007bff" for="ch0">{{table.chapter0.questions}}</label></td>
-            <td>{{table.chapter0.pictures}}</td>
-            <td><label style="text-decoration: underline; color: #007bff" for="ech1">{{table.chapter1.draft}}</label></td>
-            <td>{{table.chapter0.draft}}</td>
-        </tr>
-
-        <tr>
-            <td>Chapter 1: The Early Years</td>
-            <td><label style="text-decoration: underline; color: #007bff" for="ch1">{{table.chapter1.questions}}</label></td>
-            <td>{{table.chapter1.pictures}}</td>
-            <td><label style="text-decoration: underline; color: #007bff" for="ech1">{{table.chapter1.draft}}</label></td>
-
-        </tr>
-
-        <tr>
-            <td>Chapter 2: Teenage Revelations</td>
-            <td><label style="text-decoration: underline; color: #007bff" for="ch2">{{table.chapter2.questions}}</label></td>
-            <td>{{table.chapter2.pictures}}</td>
-            <td><label style="text-decoration: underline; color: #007bff" for="ech2">{{table.chapter2.draft}}</label></td>
-        </tr>
-
-        <tr>
-            <td>Chapter 3: Into Adulthood</td>
-            <td>{{table.chapter3.questions}}</td>
-            <td>{{table.chapter3.pictures}}</td>
-            <td>{{table.chapter3.draft}}</td>
-        </tr>
-
-        <tr>
-            <td>Chapter 4: Personal Milestones</td>
-            <td>{{table.chapter4.questions}}</td>
-            <td>{{table.chapter4.pictures}}</td>
-            <td>{{table.chapter4.draft}}</td>
-        </tr>
-
-        <tr>
-            <td>Chapter 5: Mature Reflections</td>
-            <td>{{table.chapter5.questions}}</td>
-            <td>{{table.chapter5.pictures}}</td>
-            <td>{{table.chapter5.draft}}</td>
-        </tr>
-
-        <tr>
-            <td>Chapter 6: Golden Years</td>
-            <td>{{table.chapter6.questions}}</td>
-            <td>{{table.chapter6.pictures}}</td>
-            <td>{{table.chapter6.draft}}</td>
-        </tr>
-        {% endcomment %}
     </table>
 
     <!-- Links for questions \!-->
     <form style="display: none" action="questionnaire/" method="POST">{% csrf_token %}
         <button type="submit" id="ch0" name="chapter" value = "0"> </button>
+    </form>
+
+    <form style="display: none" action="choose-subchapter/" method="POST">{% csrf_token %}
         <button type="submit" id="ch1" name="chapter" value = "1"> </button>
         <button type="submit" id="ch2" name="chapter" value = "2"> </button>
         <button type="submit" id="ch3" name="chapter" value = "3"> </button>
@@ -120,5 +172,17 @@
     <p>Need to take a break? <a href="logout/">Log out</a></p>
 
 </div>
+
+<script>
+    function toggleOptions(containerId) {
+        var container = document.getElementById(containerId);
+        if (container.style.display === "none" || container.style.display === "") {
+            container.style.display = "block";
+        } else {
+            container.style.display = "none";
+        }
+    }
+</script>
+
 </body>
 </html>

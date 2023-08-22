@@ -19,10 +19,11 @@
     /* Center the content on the page */
     .container {
         max-width: 1100px;
-        margin: 0 auto;
         padding: 30px;
         background-color: #fff;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Add margin to the bottom of the content */
+        margin: 0 auto 50px;
     }
 
     /* Style headings */
@@ -86,29 +87,47 @@
       font-family: "Times New Roman", Times, serif; /* Set a specific font */
     }
 
+    footer {
+      text-align: center; /* Align text in the center if desired */
+      background-color: #f5f5f5; /* Background color */
+      padding: 0; /* Add padding for spacing */
+      border-top: 1px solid #ddd; /* Add a top border for separation */
+      height: auto; /* Allow the height to adjust to content */
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      font-family: Arial, sans-serif;
+      font-size: medium;
+    }
+
     body {font-size: x-large}
   </style>
 </head>
 <body>
 <div class="container">
 
-  <h1>{{chapter_name}}</h1>
+  <h1>{{chapter_name |safe}}</h1>
+  <h2>{{subchapter}}</h2>
   <hr>
   <form action="" method="POST">{% csrf_token %}
 
     <!-- FOR loop that creates each question -->
     {% for question in data %}
-    <div class="question" id="quest{{question.question_idx}}">
-      <h2>Question {{question.question_idx}}</h2>
-      <label for="question{{question.question_idx}}">{{question.question}}</label><br>
-      <textarea id="question{{question.question_idx}}" name="question{{question.question_idx}}" rows="20" cols="133">{{question.previous_answer}}</textarea>
-    </div>
+      <div class="question" id="quest{{question.question_idx}}">
+        <h2>Question {{question.question_idx}}</h2>
+        <label for="question{{question.question_idx}}">{{question.question}}</label><br>
+        <textarea id="question{{question.question_idx}}" name="question{{question.question_idx}}" rows="20" cols="133">{{question.previous_answer}}</textarea>
+      </div>
     {% endfor %}
     <br>
     <div>
 
+      <p id="question_list"></p>
+
       <button type="button" onclick="showPreviousQuestion()">Previous</button>
       <button type="button" onclick="showNextQuestion()">Next</button>
+      <button type="button" onclick="skipQuestion()">Skip</button>
       <button type="button" onclick="saveAnswers()">Save</button>
 
       <br><br>
@@ -123,11 +142,19 @@
     <button formaction="../../fireapp/save-answers/">Save and exit!</button>
   </form>
 
+  <footer>
+        <p id="footnote1"></p>
+        <p id="footnote2"></p>
+  </footer>
+
 </div>
 
 <script>
-  var currentQuestion = 1;
+  let currentQuestion = 1;
   var totalQuestions = document.getElementsByClassName('question').length;
+  const list = "{{indices}}".split(" ");
+  const arrOfNum = list.map(str => {return parseInt(str, 10);});
+  setInterval(saveAnswers, 2 * 60 * 1000);
 
   function showQuestion(questionNumber) {
     var questions = document.getElementsByClassName('question');
@@ -135,19 +162,48 @@
       questions[i].style.display = 'none';
     }
     document.getElementById('quest' + questionNumber).style.display = 'block';
+    console.log(currentQuestion)
+  }
+
+  function skipQuestion() {
+    var question = document.getElementById('question' + currentQuestion);
+    if (question.innerHTML === "") {
+      question.innerHTML = "Skip question";
+    }
+    showNextQuestion();
   }
 
   function showNextQuestion() {
     if (currentQuestion < totalQuestions) {
       currentQuestion++;
-      showQuestion(currentQuestion);
+      while (!(arrOfNum.includes(currentQuestion)) && currentQuestion < totalQuestions) {
+        console.log(currentQuestion)
+        currentQuestion++;
+      }
+
+      if (currentQuestion === totalQuestions && !(arrOfNum.includes(currentQuestion))){
+        showPreviousQuestion()
+      }
+      else {
+        showQuestion(currentQuestion);
+      }
     }
   }
-
-  function showPreviousQuestion() {
+    function showPreviousQuestion() {
     if (currentQuestion > 1) {
       currentQuestion--;
-      showQuestion(currentQuestion);
+      while (!(arrOfNum.includes(currentQuestion)) && currentQuestion > 1) {
+        console.log(currentQuestion)
+        currentQuestion--;
+      }
+
+      if (currentQuestion === 1 && !(arrOfNum.includes(currentQuestion))){
+        showNextQuestion()
+      }
+      else {
+        showQuestion(currentQuestion);
+      }
+
     }
   }
 
@@ -155,7 +211,7 @@
     var questionNumberInput = document.getElementById('gotoQuestion');
     var questionNumber = parseInt(questionNumberInput.value);
 
-    if (questionNumber >= 1 && questionNumber <= totalQuestions) {
+    if (questionNumber >= 1 && questionNumber <= totalQuestions && arrOfNum.includes(questionNumber)) {
       currentQuestion = questionNumber;
       showQuestion(currentQuestion);
     }
@@ -183,10 +239,38 @@
       }
     };
 
+    //update status footer
+    const now = new Date()
+    var foot1 = document.getElementById("footnote1");
+    var foot2 = document.getElementById("footnote2");
+    foot1.innerHTML = `Answers Saved!`;
+    foot1.style.display = "inline-block"
+
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    };
+    const americanDateTime = new Intl.DateTimeFormat("en-US", options).format;
+    const save_time = americanDateTime(now)
+
+    foot2.innerHTML = `     ${save_time}`;
+    foot2.style.color = "#909090"
+    foot2.style.display = "inline-block"
+
     xhr.send(formData);
   }
 
-  showQuestion(currentQuestion);
+  if (arrOfNum.includes(1)) {
+    showQuestion(currentQuestion);
+  }
+  else {
+    showNextQuestion()
+  }
+
+  p = document.getElementById("question_list")
+  p.innerHTML = "The question numbers for this subchapter are:{% for idx in indices_int %} {{idx}},{% endfor %}".slice(0, -1)
+
 
 </script>
 
