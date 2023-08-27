@@ -110,7 +110,7 @@
   <h1>{{chapter_name |safe}}</h1>
   <h2>{{subchapter_name}}</h2>
   <hr>
-  <form action="" method="POST">{% csrf_token %}
+  <form id="MyForm" action="" method="POST">{% csrf_token %}
 
     <!-- FOR loop that creates each question -->
     {% for question in data %}
@@ -270,8 +270,10 @@
     showNextQuestion()
   }
 
+
+
   p = document.getElementById("question_list")
-  p.innerHTML = "The question numbers for this subchapter are:{% for idx in indices_int %} {{idx}},{% endfor %}".slice(0, -1)
+  p.innerHTML = "The questions to be answered for this sub-chapter are:{% for idx in indices_int %} {{idx}},{% endfor %}".slice(0, -1)
 
 
 </script>

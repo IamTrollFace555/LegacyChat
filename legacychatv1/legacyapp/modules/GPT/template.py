@@ -16,7 +16,8 @@ class Template:
         for key, value in answer_dict.items():
             prompt += f"* {key}: {value}\n"
 
-        prompt += "\n\nYour job is to summarize this information in the form of a description of the person" \
+        prompt += ("\n\nThis person wants to write a book about their life, an autobiography. Using the answers "
+                   "provided by the person, write the foreword for the book.") \
 
         return self.writer_prompt + prompt
 

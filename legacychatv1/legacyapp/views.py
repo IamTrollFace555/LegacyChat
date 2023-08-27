@@ -39,6 +39,7 @@ def choose_subchapter(request):
     if request.method == "POST":
         response = request.POST
         chapter = response["chapter"]
+        print("IM HEREEEEEEEEEEEEEEEEEEEEE")
 
         return render(
             request,

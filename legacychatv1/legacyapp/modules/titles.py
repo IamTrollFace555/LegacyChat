@@ -19,22 +19,23 @@ SHORT_NAMES = [
 ]
 
 SUBCHAPTER_LIST = {
-    "ch1": {
-        "sch0": "",
-        "sch1": "Transitioning into Adolescence",  # 1-4
-        "sch2": "Family and Personal Evolution",  # 5-8
-        "sch3": "Decisions and Turning Points",  # 9-12
-        "sch4": "Challenges and Resilience",  # 13-16
-        "sch5": "Milestones and Experiences",  # 17-20
-    },
 
-    "ch2": {
+    "ch1": {
         "sch0": "",
         "sch1": "Roots and Beginnings",  # 1, 4, 2, 3, 5, 16
         "sch2": "Exploring Childhood Joys and Challenges",  # 6, 7, 8, 10, 12
         "sch3": "Early Education and Dreams",  # 11, 15, 17, 14
         "sch4": "Treasured Memories and Influences",  # 13, 9, 18, 19
         "sch5": "Reflections on Early Years",  # 20
+    },
+
+    "ch2": {
+        "sch0": "",
+        "sch1": "Transitioning into Adolescence",  # 1-4
+        "sch2": "Family and Personal Evolution",  # 5-8
+        "sch3": "Decisions and Turning Points",  # 9-12
+        "sch4": "Challenges and Resilience",  # 13-16
+        "sch5": "Milestones and Experiences",  # 17-20
     },
 }
 
