@@ -1,7 +1,10 @@
 # LegacyChat
 An AI-Powered Chat Service to Preserve Family Wisdom
 
-
+# Bootstrap elements to check out
+- Cards
+- Alerts
+- Carousel
 
 # TO DO's
 
@@ -14,6 +17,7 @@ An AI-Powered Chat Service to Preserve Family Wisdom
 - Add Google authentication
 - Delete chapters
 - [ABORTED] Return to subchapter selection from "/questionnaire"
+- [IMPORTANT] Save the API key as an environment variable
 
 # Recently Done
 

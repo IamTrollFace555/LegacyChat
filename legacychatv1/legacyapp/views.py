@@ -18,6 +18,8 @@ from .modules.titles import (
 
 )
 
+from random import random
+
 
 # Create your views here.
 def homepage(request):
@@ -146,3 +148,46 @@ def logout(request):
     except KeyError:
         pass
     return redirect("../../")
+
+
+def summary(request):
+
+    try:
+        user_id = request.session.get("user_id")
+        if request.method == "POST":
+            response = request.POST
+            chapter = response["chapter"]
+            flag = ""
+
+            try:
+                questions = get_questionnaire(chapter)
+                answers = get_user_answers(user_id, chapter)
+                idxs = [f"question{i}" for i in range(1, len(questions) + 1)]
+            except:
+                flag = "Nothing here yet!"
+
+            data = {"questions": questions, "answers": answers, "idxs": idxs, "flag": flag}
+
+
+            return render(
+                request,
+                "summary.html",
+                data)
+
+    except:
+        pass
+
+# ======================================= HELPER FUNCTIONS ======================================= #
+def create_summary(user_id, chapter):
+
+    user_data = get_user_personal_data(user_id)
+    questions = get_questionnaire(chapter)
+
+    first_name = user_data["first_name"]
+    last_name = user_data["last_name"]
+
+    filename = f"{first_name}_{last_name}.txt"
+    with open(filename, "w") as file:
+        pass
+
+

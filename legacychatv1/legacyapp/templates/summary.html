@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Summary</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% load static %}
+    {% load custom_filters %}
+
+</head>
+<body>
+<div class="container-sm">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="{% static 'logo1.png' %}" alt="Logo" width="199" height="50">
+        </a>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container mt-4">
+        <h1 class="display-4">Title</h1>
+        <h2 class="mb-4">Subtitle</h2>
+
+        <!-- Questions and Answers Section -->
+        {% for idx in idxs %}
+        {% with question=questions|get_attribute:idx%}
+        {% with answer=answers|get_attribute:idx %}
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{forloop.counter}}. {{question}}
+
+                    {% if answer == "" %}
+                        <span class="badge bg-secondary">Not answered yet</span>
+                    {% endif %}
+                </h5>
+
+                <p class="d-inline-flex gap-1">
+                    {% if answer != "" %}
+                      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample{{idx}}" aria-expanded="false" aria-controls="collapseExample{{idx}}">
+                        See my answer!
+                      </button>
+                    {% endif %}
+                </p>
+                <div class="collapse" id="collapseExample{{idx}}">
+                  <div class="card card-body">
+                    {{answer}}
+                  </div>
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+        {% endwith %}
+        {% endfor %}
+
+
+        <!-- Add more question and answer sections as needed -->
+
+    </div>
+
+</body>
+</html>

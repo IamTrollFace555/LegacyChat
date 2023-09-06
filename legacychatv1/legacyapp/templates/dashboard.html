@@ -119,6 +119,7 @@
             <th>Chapter</th>
             <th>Questions</th>
             <th>Pictures</th>
+            <th>Summary</th>
             <th>Chapter Draft</th>
         </tr>
 
@@ -130,8 +131,9 @@
                 <td>{{name}}</td>
                 <td><label style="text-decoration: underline; color: #007bff" for="ch{{forloop.counter0}}">{{table_ch.questions}}</label></td>
                 <td>{{table.chapter0.pictures}}</td>
+                <td><label style="text-decoration: underline; color: #007bff" for="smch{{forloop.counter0}}">Go!</label></td>
                 {% if table_ch.draft == "Waiting answers" %}
-                <td>{{table_ch.draft}}</td>
+                    <td>{{table_ch.draft}}</td>
                 {% else %}
                     <td><label style="text-decoration: underline; color: #007bff" for="ech{{forloop.counter0}}">{{table_ch.draft}}</label></td>
                 {% endif %}
@@ -157,6 +159,17 @@
 
     <!-- Links for Pictures \!-->
     <!-- Not implemented yet! \!-->
+
+    <!-- Links for summary \!-->
+    <form style="display: none" action="summary/" method="POST">{% csrf_token %}
+        <button type="submit" id="smch0" name="chapter" value = "0"> </button>
+        <button type="submit" id="smch1" name="chapter" value = "1"> </button>
+        <button type="submit" id="smch2" name="chapter" value = "2"> </button>
+        <button type="submit" id="smch3" name="chapter" value = "3"> </button>
+        <button type="submit" id="smch4" name="chapter" value = "4"> </button>
+        <button type="submit" id="smch5" name="chapter" value = "5"> </button>
+        <button type="submit" id="smch6" name="chapter" value = "6"> </button>
+    </form>
 
     <!-- Links for chapter edit \!-->
     <form style="display: none" action="chapter-edit/" method="POST">{% csrf_token %}
