@@ -9,21 +9,25 @@
     {% load static %}
     {% load custom_filters %}
 
+
 </head>
 <body>
-<div class="container-sm">
+<div class="container-fluid">
 
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">
-            <img src="{% static 'logo1.png' %}" alt="Logo" width="199" height="50">
-        </a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="width: 100%">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'logo2.png' %}" alt="Logo" width="199" height="50">
+            </a>
+        </div>
     </nav>
+
 
     <!-- Page Content -->
     <div class="container mt-4">
-        <h1 class="display-4">Title</h1>
-        <h2 class="mb-4">Subtitle</h2>
+        <h1 class="display-4">Summary</h1>
+        <h2 class="mb-4">{{chapter_name| safe}}</h2>
 
         <!-- Questions and Answers Section -->
         {% for idx in idxs %}
@@ -31,6 +35,7 @@
         {% with answer=answers|get_attribute:idx %}
         <div class="card mt-3">
             <div class="card-body">
+
                 <h5 class="card-title">
                     {{forloop.counter}}. {{question}}
 
@@ -39,17 +44,12 @@
                     {% endif %}
                 </h5>
 
-                <p class="d-inline-flex gap-1">
-                    {% if answer != "" %}
-                      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample{{idx}}" aria-expanded="false" aria-controls="collapseExample{{idx}}">
-                        See my answer!
-                      </button>
-                    {% endif %}
-                </p>
-                <div class="collapse" id="collapseExample{{idx}}">
+                <div id="collapseExample{{idx}}">
+                  {% if answer != "" %}
                   <div class="card card-body">
                     {{answer}}
                   </div>
+                  {% endif %}
                 </div>
             </div>
         </div>
@@ -61,6 +61,6 @@
         <!-- Add more question and answer sections as needed -->
 
     </div>
-
+</div>
 </body>
 </html>

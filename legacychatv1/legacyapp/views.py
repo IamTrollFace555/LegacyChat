@@ -166,7 +166,7 @@ def summary(request):
             except:
                 flag = "Nothing here yet!"
 
-            data = {"questions": questions, "answers": answers, "idxs": idxs, "flag": flag}
+            data = {"questions": questions, "answers": answers, "idxs": idxs, "flag": flag, "chapter_name": TITLE_DICT[chapter]}
 
 
             return render(

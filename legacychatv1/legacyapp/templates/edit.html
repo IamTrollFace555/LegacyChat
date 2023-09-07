@@ -1,82 +1,208 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit your chapter</title>
+    <title>Time to generate your chapters!</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% load static %}
     <style>
-        body {font-size: x-large}
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background-color: #f5f5f5;
-        }
-
-        /* Center the content on the page */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 30px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Style headings */
-        h1, h2, h3 {
-            color: #333;
-        }
-
-        /* Style links */
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* Style buttons */
-        button {
-            display: inline-block;
-            padding: 8px 16px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Add spacing between elements */
-        p, ul, ol {
-            margin-bottom: 15px;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: vertical; /* Allow vertical resizing */
-            font-family: "Times New Roman", Times, serif; /* Set a specific font */
+        /* Optional: Add custom CSS for spacing between cards */
+        .card {
+            margin-right: 0px; /* Adjust the margin as needed */
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Edit Your Chapter!</h1>
-    <h2>{{chapter_name}}</h2>
+<div class="container-fluid">
 
-    <form action="../../fireapp/save-text/" method="POST">{% csrf_token %}
-        <label for="text">This is the chapter that our AI model generated for you:</label><br>
-        <textarea id="text" name="text" rows="30" cols="200">{{text}}</textarea><br><br>
-        <button type="submit" id="chapter" name="chapter" value="{{chapter}}"> Save!</button>
-    </form>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="width: 100%">
+        <div class="container-fluid"> <!-- Add container-fluid -->
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'logo2.png' %}" alt="Logo" width="199" height="50">
+            </a>
+        </div>
+    </nav>
+</div>
+<div class="container mt-5">
+
+    <h1 class="display-4">Summary</h1>
+    <h2 class="mb-4">{{chapter_name| safe}}</h2>
+    <hr>
+
+    <h5 class="simple" >It's time to start generating your chapters!</h5>
+    <br>
+    <p>Use the buttons below to customize the way your chapter will be generated:</p>
+    <br><br>
+
+
+    <div class="accordion" id="creativity">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsecreativity" aria-expanded="true" aria-controls="collapsecreativity">
+            Creativity
+          </button>
+        </h2>
+        <div id="collapsecreativity" class="accordion-collapse collapse show" data-bs-parent="#creativity">
+          <div class="accordion-body">
+            Increasing the creativity value generally enhances diversity in the output but could also raise the chances of it deviating from the context. On the other hand, reducing the temperature value results in AI responses that are more concentrated and predictable, closely aligned with the answers that the user provided.
+            <br><br>
+                <div class="row justify-content-left">
+                  <div class="col-md-2">
+                    <h4>Creativity:</h4>
+                  </div>
+                  <div class="col-md-1">
+                    <div class="btn-group" role="group" aria-label="creativity">
+                      <button type="button" class="btn btn-primary">1</button>
+                      <button type="button" class="btn btn-primary">2</button>
+                      <button type="button" class="btn btn-primary">3</button>
+                      <button type="button" class="btn btn-primary">4</button>
+                      <button type="button" class="btn btn-primary">5</button>
+                    </div>
+                  </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="accordion" id="Tone">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsetone" aria-expanded="true" aria-controls="collapsetone">
+            Tone
+          </button>
+        </h2>
+        <div id="collapsetone" class="accordion-collapse collapse show" data-bs-parent="#Tone">
+          <div class="accordion-body">
+            Choose between a variety of tones to customize the feel your chapter will have. You may choose a <strong>Serious</strong> tone for an important or difficult stage of your life. Or you may choose a <strong>Humorous</strong> for a time of joy and happiness.
+            <br><br>
+                <div class="row justify-content-left">
+                  <div class="col-md-1">
+                    <h4>Tone:</h4>
+                  </div>
+
+                  <div class="btn-group col-md-1" role="group" aria-label="tone">
+                      <input class="btn btn-primary" type="button" value="Serious">
+                      <input class="btn btn-primary" type="button" value="Sincere">
+                      <input class="btn btn-primary" type="button" value="Friendly">
+                      <input class="btn btn-primary" type="button" value="Humorous">
+                      <input class="btn btn-primary" type="button" value="Optimistic">
+                  </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="accordion" id="WritingLevel">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsewriting" aria-expanded="true" aria-controls="collapsewriting">
+            Writing Level
+          </button>
+        </h2>
+        <div id="collapsewriting" class="accordion-collapse collapse show" data-bs-parent="#WritingLevel">
+          <div class="accordion-body">
+            The writing level is what gives the text your personal signature, you can choose the writing level that identifies you the most. Are you an academic? try the <strong>Level</strong> writing level
+            <br><br>
+                <div class="row">
+                  <div class="col-md-2">
+                    <h4>Writing level:</h4>
+                  </div>
+                  <div class="col-md-1">
+                    <div class="btn-group" role="group" aria-label="writinglevel">
+                      <button type="button" class="btn btn-primary">1</button>
+                      <button type="button" class="btn btn-primary">2</button>
+                      <button type="button" class="btn btn-primary">3</button>
+                      <button type="button" class="btn btn-primary">4</button>
+                      <button type="button" class="btn btn-primary">5</button>
+                    </div>
+                  </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Draft 1</h5>
+                    <p class="card-text">This text was generated using the folllowing parameters:</p>
+                    <ul>
+                        <li>Creativity: 5</li>
+                        <li>Writing Level: High-Schooler</li>
+                        <li>Tone: Friendly</li>
+                    </ul>
+
+                    <p class="d-inline-flex gap-1">
+                      <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft1" role="button" aria-expanded="false" aria-controls="draft1">
+                        Preview
+                      </a>
+                      <a href="#" class="btn btn-primary">Edit</a>
+                    </p>
+                    <div class="collapse" id="draft1">
+                      <div class="card card-body">
+                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Draft 2</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+
+                    <p class="d-inline-flex gap-1">
+                      <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft2" role="button" aria-expanded="false" aria-controls="draft2">
+                        Preview
+                      </a>
+                      <a href="#" class="btn btn-primary">Edit!</a>
+                    </p>
+                    <div class="collapse" id="draft2">
+                      <div class="card card-body">
+                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Draft 3</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+
+                    <p class="d-inline-flex gap-1">
+                      <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft3" role="button" aria-expanded="false" aria-controls="draft3">
+                        Preview
+                      </a>
+                      <a href="#" class="btn btn-primary">Edit!</a>
+                    </p>
+                    <div class="collapse" id="draft3">
+                      <div class="card card-body">
+                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 </div>
 </body>
