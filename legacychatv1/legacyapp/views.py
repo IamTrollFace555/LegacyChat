@@ -7,6 +7,7 @@ from fireapp.views import (
     get_user_book_chapter,
     consume_chapter_token,
     get_user_dashboard_table,
+    user_chapter_setup,
 )
 
 from .modules.titles import (
@@ -116,19 +117,19 @@ def questionnaire(request):
 
 def chapter_edit(request):
     try:
-        ID = request.session.get("user_id")
+        user_id = request.session.get("user_id")
         if request.method == "POST":
             response = request.POST
             chapter = response["chapter"]
             try:
                 # Show the text stored in the database
-                text = get_user_book_chapter(ID, chapter)
-                if text is None or text == "":
-                    raise Exception("")
+                pages = get_user_book_chapter(user_id, chapter)
+                if pages is None:
+                    user_chapter_setup(user_id)
             except:
                 # Consume a token and generate chapter
-                if consume_chapter_token(ID, chapter):
-                    text = generate_chapter(ID, chapter)
+                if consume_chapter_token(user_id, chapter):
+                    text = generate_chapter(user_id, chapter)
                 else:
                     # Display error text if you
                     text = "Internal Error: You ran out of tokens!"

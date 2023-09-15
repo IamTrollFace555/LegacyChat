@@ -67,13 +67,13 @@ def register(request):
                 "ch6": False,
             },
             "chapter-tokens": {
-                "profile": 4,
-                "ch1": 4,
-                "ch2": 4,
-                "ch3": 4,
-                "ch4": 4,
-                "ch5": 4,
-                "ch6": 4,
+                "profile": 3,
+                "ch1": 3,
+                "ch2": 3,
+                "ch3": 3,
+                "ch4": 3,
+                "ch5": 3,
+                "ch6": 3,
             },
             "chosen-option": {
                 "ch1": 1,
@@ -198,11 +198,29 @@ def get_user_answers(user_id, chapter) -> dict or None:
         return None
 
 
-def get_user_book_chapter(user_id, chapter) -> str or None:
+def get_user_book_chapter(user_id, chapter) -> dict or None:
     try:
-        return db.child("user-book").child(user_id).child(CH_DICT(chapter)).get().val()
+        return dict(db.child("user-book").child(user_id).child(CH_DICT(chapter)).get().val())
     except:
         return None
+
+
+def user_chapter_setup(user_id):
+    NUM_CHAPTERS = 6
+    data = {
+        user_id: {
+            "profile": {
+                "gen1": "",
+                "gen2": "",
+                "gen3": "",
+            },
+        }
+    }
+
+    for i in range(1, NUM_CHAPTERS + 1):
+        data[f"ch{i}"] = {"gen1": "", "gen2": "", "gen3": ""}
+
+    db.child("personal-data").child(ID).child("completed-chapters").child(CH_DICT(chapter)).set(True)
 
 
 def consume_chapter_token(user_id, chapter):
