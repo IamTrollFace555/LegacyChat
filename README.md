@@ -6,6 +6,13 @@ An AI-Powered Chat Service to Preserve Family Wisdom
 - Alerts
 - Carousel
 
+# Writing levels
+- Bachelor
+- No formal education
+- Experienced writer
+- Casual Writer
+- School Kid
+
 # TO DO's
 
 - [IMPORTANT] When we are finished with a section we should have a page (where question 21 would be). It should say “ congratulations you have answered the questions to help us create your persona”. Here are the questions and answers below.

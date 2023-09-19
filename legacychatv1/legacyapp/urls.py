@@ -9,5 +9,6 @@ urlpatterns = [
     path("dashboard/logout/", views.logout, name="logout"),
     path("dashboard/choose-subchapter/", views.choose_subchapter, name="choose-subchapter"),
     path("dashboard/summary/", views.summary, name="summary"),
+    path("dashboard/generate-chapter/", views.generate_chapter, name="generate-chapter"),
 
 ]

@@ -60,3 +60,13 @@ SUBCHAPTER_QUESTIONS = {
 }
 
 CH_DICT = lambda x: "ch" + x if x != "0" else "profile"
+
+QUESTIONNAIRE_DICT = {
+            "0": "profile",
+            "1": "Chapter 1: The Early Years: Foundations of a Life",
+            "2": "Chapter 2: Teenage Revelations: Navigating Change and Discovery",
+            "3": "Chapter 3: Into Adulthood: The Awakening of Purpose",
+            "4": "Chapter 4: Personal Milestones: Love, Family, and Personal Growth",
+            "5": "Chapter 5: Mature Reflections: A Lifetime of Lessons Learned",
+            "6": "Chapter 6: Golden Years: Embracing Wisdom and Legacy",
+        }

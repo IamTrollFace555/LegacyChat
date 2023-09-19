@@ -16,7 +16,7 @@
 <body>
 <div class="container-fluid">
 
-    <!-- Navigation Bar -->
+    <!-- ============================================ Navigation Bar ============================================ -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="width: 100%">
         <div class="container-fluid"> <!-- Add container-fluid -->
             <a class="navbar-brand" href="#">
@@ -27,7 +27,7 @@
 </div>
 <div class="container mt-5">
 
-    <h1 class="display-4">Summary</h1>
+    <h1 class="display-4">Chapter Generation</h1>
     <h2 class="mb-4">{{chapter_name| safe}}</h2>
     <hr>
 
@@ -36,8 +36,9 @@
     <p>Use the buttons below to customize the way your chapter will be generated:</p>
     <br><br>
 
+    <!-- ============================================ Chapter Options ============================================ -->
 
-    <div class="accordion" id="creativity">
+    <div class="accordion" id="Creativity">
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsecreativity" aria-expanded="true" aria-controls="collapsecreativity">
@@ -54,11 +55,11 @@
                   </div>
                   <div class="col-md-1">
                     <div class="btn-group" role="group" aria-label="creativity">
-                      <button type="button" class="btn btn-primary">1</button>
-                      <button type="button" class="btn btn-primary">2</button>
-                      <button type="button" class="btn btn-primary">3</button>
-                      <button type="button" class="btn btn-primary">4</button>
-                      <button type="button" class="btn btn-primary">5</button>
+                      <input class="btn btn-primary" type="button" value="1">
+                      <input class="btn btn-primary" type="button" value="2">
+                      <input class="btn btn-primary" type="button" value="3">
+                      <input class="btn btn-primary" type="button" value="4">
+                      <input class="btn btn-primary" type="button" value="5">
                     </div>
                   </div>
                 </div>
@@ -109,7 +110,7 @@
         </h2>
         <div id="collapsewriting" class="accordion-collapse collapse show" data-bs-parent="#WritingLevel">
           <div class="accordion-body">
-            The writing level is what gives the text your personal signature, you can choose the writing level that identifies you the most. Are you an academic? try the <strong>Level</strong> writing level
+            The writing level is what gives the text your personal signature, you can choose the writing level that you like the most. Are you an academic? try the <strong>Experienced Writer</strong> writing level. Would you like to talk about your early years as if it were you in that moment? Try the <strong>School kid writing level</strong>
             <br><br>
                 <div class="row">
                   <div class="col-md-2">
@@ -117,11 +118,11 @@
                   </div>
                   <div class="col-md-1">
                     <div class="btn-group" role="group" aria-label="writinglevel">
-                      <button type="button" class="btn btn-primary">1</button>
-                      <button type="button" class="btn btn-primary">2</button>
-                      <button type="button" class="btn btn-primary">3</button>
-                      <button type="button" class="btn btn-primary">4</button>
-                      <button type="button" class="btn btn-primary">5</button>
+                      <input class="btn btn-primary" type="button" value="Unschooled Person">
+                      <input class="btn btn-primary" type="button" value="School Kid">
+                      <input class="btn btn-primary" type="button" value="Bachelor">
+                      <input class="btn btn-primary" type="button" value="Casual Writer">
+                      <input class="btn btn-primary" type="button" value="Experienced Writer">
                     </div>
                   </div>
                 </div>
@@ -132,32 +133,48 @@
 
     <br><br>
 
+    <!-- ======================================= Form for Chapter Options ======================================= -->
 
     <div class="container">
       <div class="row justify-content-md-center">
-        <button style="width: 50%;" type="button" class="btn btn-primary text-">Generate Chapter!</button>
+          <form method="POST" action="../generate-chapter/" id="chapter_options">{% csrf_token %}
+            <input type="hidden" name="chapter" value="{{chapter}}">
+          </form>
+          <button style="width: 50%;" type="button" class="btn btn-primary text-" id="submitForm">Generate Chapter!</button>
       </div>
     </div>
 
     <br><br>
 
+    {% if flag != "" %}
+    <div class="alert alert-primary" role="alert">
+        {{flag}}
+    </div>
+    {% endif %}
+
     <hr>
 
     <br><br>
 
-
+    <!-- ================================================= Cards ================================================= -->
 
     <div class="row">
         <div class="col-md-4">
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title">Draft 1</h5>
-                    <p class="card-text">This text was generated using the folllowing parameters:</p>
-                    <ul>
-                        <li>Creativity: 5</li>
-                        <li>Writing Level: High-Schooler</li>
-                        <li>Tone: Friendly</li>
-                    </ul>
+
+                    {% if pages.gen1.text == "" %}
+                        <p class="card-text">There is nothing to show here yet. Try generating a chapter first!</p>
+                    {% else %}
+                        <p class="card-text">This text was generated using the following parameters:</p>
+                        <ul>
+                            <li>Creativity: {{pages.gen1.creativity}}</li>
+                            <li>Tone: {{pages.gen1.tone}}</li>
+                            <li>Writing Level: {{pages.gen1.level}}</li>
+
+                        </ul>
+                    {% endif %}
 
                     <p class="d-inline-flex gap-1">
                       <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft1" role="button" aria-expanded="false" aria-controls="draft1">
@@ -167,7 +184,7 @@
                     </p>
                     <div class="collapse" id="draft1">
                       <div class="card card-body">
-                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                        {{prevs.gen1}}
                       </div>
                     </div>
                 </div>
@@ -178,7 +195,17 @@
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title">Draft 2</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    {% if pages.gen2.text == "" %}
+                        <p class="card-text">There is nothing to show here yet. Try generating a chapter first!</p>
+                    {% else %}
+                        <p class="card-text">This text was generated using the following parameters:</p>
+                        <ul>
+                            <li>Creativity: {{pages.gen2.creativity}}</li>
+                            <li>Tone: {{pages.gen2.tone}}</li>
+                            <li>Writing Level: {{pages.gen2.level}}</li>
+
+                        </ul>
+                    {% endif %}
 
                     <p class="d-inline-flex gap-1">
                       <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft2" role="button" aria-expanded="false" aria-controls="draft2">
@@ -188,7 +215,7 @@
                     </p>
                     <div class="collapse" id="draft2">
                       <div class="card card-body">
-                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                        {{prevs.gen2}}
                       </div>
                     </div>
                 </div>
@@ -199,7 +226,17 @@
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title">Draft 3</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    {% if pages.gen3.text == "" %}
+                        <p class="card-text">There is nothing to show here yet. Try generating a chapter first!</p>
+                    {% else %}
+                        <p class="card-text">This text was generated using the following parameters:</p>
+                        <ul>
+                            <li>Creativity: {{pages.gen3.creativity}}</li>
+                            <li>Tone: {{pages.gen3.tone}}</li>
+                            <li>Writing Level: {{pages.gen3.level}}</li>
+
+                        </ul>
+                    {% endif %}
 
                     <p class="d-inline-flex gap-1">
                       <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft3" role="button" aria-expanded="false" aria-controls="draft3">
@@ -209,7 +246,7 @@
                     </p>
                     <div class="collapse" id="draft3">
                       <div class="card card-body">
-                        Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                        {{prevs.gen3}}
                       </div>
                     </div>
                 </div>
@@ -217,8 +254,109 @@
         </div>
     </div>
 
-
-
 </div>
+
+<!-- ============================================ <script> ================================================= -->
+
+<script>
+  // Function to save the user's selection in local storage
+  function saveSelection(key, value) {
+    localStorage.setItem(key, value);
+  }
+
+  // Function to retrieve the user's selection from local storage
+  function getSelection(key) {
+    return localStorage.getItem(key);
+  }
+
+  // Add event listeners to the input elements
+  document.querySelectorAll('input[type="button"]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      // Get the value of the clicked button
+      var value = this.value;
+      // Get the ID of the parent accordion
+      var accordionId = this.closest('.accordion').id;
+
+      // Deactivate all buttons in the same accordion
+      document.querySelectorAll('#' + accordionId + ' input[type="button"]').forEach(function (btn) {
+        btn.classList.remove('active');
+      });
+
+      // Set the clicked button as active
+      this.classList.add('active');
+
+      // Save the user's selection with a key that includes the accordion ID
+      saveSelection(accordionId, value);
+    });
+  });
+
+  // Load the user's previous selections when the page loads
+  document.addEventListener('click', function () {
+    // Loop through the accordion IDs and retrieve the selections
+    document.querySelectorAll('.accordion').forEach(function (accordion) {
+      var accordionId = accordion.id;
+      var savedSelection = getSelection(accordionId);
+
+      // If a selection is found, set the corresponding button as active
+      if (savedSelection) {
+        var activeButton = accordion.querySelector('input[value="' + savedSelection + '"]');
+        if (activeButton) {
+          // Deactivate all buttons in the same accordion
+          document.querySelectorAll('#' + accordionId + ' input[type="button"]').forEach(function (btn) {
+            btn.classList.remove('active');
+          });
+
+          // Set the saved selection button as active
+          activeButton.classList.add('active');
+        }
+      }
+    });
+  });
+
+    // Function to create and submit the form with user selections
+function submitUserSelections() {
+  var formData = new FormData(); // Create a FormData object to store form data
+
+  // Loop through the accordion IDs
+  document.querySelectorAll('.accordion').forEach(function (accordion) {
+    var accordionId = accordion.id;
+    var savedSelection = getSelection(accordionId);
+
+    // If a selection is found, add it to the FormData
+    if (savedSelection) {
+      formData.append(accordionId, savedSelection);
+    }
+  });
+
+  // Create a form element
+  var form = document.getElementById("chapter_options");
+  form.method = 'POST'; // Set the form method (POST or GET)
+  form.action = '../generate-chapter/'; // Set the server endpoint where you want to send the form data
+
+  // Append each FormData entry as a hidden input field in the form
+  formData.forEach(function (value, key) {
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = value;
+    form.appendChild(input);
+  });
+
+  // Append the form to the document body and submit it
+  document.body.appendChild(form);
+  form.submit();
+}
+
+ // Add a click event listener to the trigger element (e.g., the "Submit" button)
+    document.getElementById('submitForm').addEventListener('click', function () {
+      submitUserSelections();
+    });
+
+
+</script>
+
+
+
+
 </body>
 </html>

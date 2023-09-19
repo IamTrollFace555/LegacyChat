@@ -1,6 +1,7 @@
 import requests
 from django.shortcuts import render, redirect
 import pyrebase
+import warnings
 
 QUESTIONNAIRE_DICT = {
     "0": "profile",
@@ -98,7 +99,6 @@ def register(request):
 
 def login(request):
     if request.method == "POST":
-        print("IN!")
         response = request.POST
         email = response["email"]
         password = response["password"]
@@ -198,34 +198,39 @@ def get_user_answers(user_id, chapter) -> dict or None:
         return None
 
 
-def get_user_book_chapter(user_id, chapter) -> dict or None:
+def get_user_book_chapters(user_id, chapter) -> dict or None:
     try:
         return dict(db.child("user-book").child(user_id).child(CH_DICT(chapter)).get().val())
     except:
         return None
 
 
-def user_chapter_setup(user_id):
-    NUM_CHAPTERS = 6
-    data = {
-        user_id: {
-            "profile": {
-                "gen1": "",
-                "gen2": "",
-                "gen3": "",
-            },
-        }
-    }
+def user_chapter_setup(user_id) -> bool:
 
-    for i in range(1, NUM_CHAPTERS + 1):
-        data[f"ch{i}"] = {"gen1": "", "gen2": "", "gen3": ""}
+    try:
+        NUM_CHAPTERS = 6
+        data = {user_id: {}}
 
-    db.child("personal-data").child(ID).child("completed-chapters").child(CH_DICT(chapter)).set(True)
+        for i in range(NUM_CHAPTERS + 1):
+            temp = {"gen1": {"text": "", "creativity": "", "tone": "", "level": "",},
+                    "gen2": {"text": "", "creativity": "", "tone": "", "level": "",},
+                    "gen3": {"text": "", "creativity": "", "tone": "", "level": "",},
+                    }
+
+            data[user_id][CH_DICT(i)] = temp
+
+        db.child("user-book").set(data)
+        return True
+
+    except warnings.warn("Chapter setup failed!"):
+        return False
 
 
 def consume_chapter_token(user_id, chapter):
     available_tokens = db.child("personal-data").child(user_id).child("chapter-tokens").child(
         CH_DICT(chapter)).get().val()
+
+    print("AVAILABLE_TOKENS: ", available_tokens)
     if available_tokens == 0:
         return False
 
@@ -275,7 +280,7 @@ def get_user_dashboard_table(user_id):
                 data[f"chapter{ch}"]["questions"] = "Go"
 
         # Chapter Draft
-        text = get_user_book_chapter(user_id, ch)
+        text = get_user_book_chapters(user_id, ch)
         if text is None or text == "":
             if finished:
                 data[f"chapter{ch}"]["draft"] = "Ready to write"
@@ -285,6 +290,16 @@ def get_user_dashboard_table(user_id):
             data[f"chapter{ch}"]["draft"] = "Complete"
 
     return data
+
+def set_generated_chapter(user_id, chapter, text, params, gen_idx):
+    data = {"text": text,
+            "creativity": params["creativity"],
+            "tone": params["tone"],
+            "level": params["level"],
+            }
+
+    db.child("user-book").child(user_id).child(CH_DICT(chapter)).child(f"gen{gen_idx}").update(data)
+
 
 
 # For testing purposes
