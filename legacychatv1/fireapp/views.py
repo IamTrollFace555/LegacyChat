@@ -239,6 +239,8 @@ def consume_chapter_token(user_id, chapter):
 
 def get_user_dashboard_table(user_id):
     # Pictures
+    print("IN")
+
     data = {
         "chapter0": {"pictures": 0},
         "chapter1": {"pictures": 0},
@@ -267,6 +269,7 @@ def get_user_dashboard_table(user_id):
             for ans in answers.values():
                 if ans == "":
                     finished = False
+                    print("NOT FINISHED!")
                 else:
                     started = True
 
@@ -278,7 +281,17 @@ def get_user_dashboard_table(user_id):
                 data[f"chapter{ch}"]["questions"] = "Go"
 
         # Chapter Draft
-        text = get_user_book_chapters(user_id, ch)
+        texts = get_user_book_chapters(user_id, ch)
+        texts = [texts["gen1"]["text"], texts["gen2"]["text"], texts["gen3"]["text"]]
+
+        print("chapter: ", chapter, "texts: ", texts)
+
+        try:
+            texts.index("")
+            text = ""
+        except:
+            text = "Not empty!"
+
         if text is None or text == "":
             if finished:
                 data[f"chapter{ch}"]["draft"] = "Ready to write"
