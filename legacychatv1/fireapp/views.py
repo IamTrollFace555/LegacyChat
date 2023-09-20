@@ -206,15 +206,14 @@ def get_user_book_chapters(user_id, chapter) -> dict or None:
 
 
 def user_chapter_setup(user_id) -> bool:
-
     try:
         NUM_CHAPTERS = 6
         data = {user_id: {}}
 
         for i in range(NUM_CHAPTERS + 1):
-            temp = {"gen1": {"text": "", "creativity": "", "tone": "", "level": "",},
-                    "gen2": {"text": "", "creativity": "", "tone": "", "level": "",},
-                    "gen3": {"text": "", "creativity": "", "tone": "", "level": "",},
+            temp = {"gen1": {"text": "", "creativity": "", "tone": "", "level": "", },
+                    "gen2": {"text": "", "creativity": "", "tone": "", "level": "", },
+                    "gen3": {"text": "", "creativity": "", "tone": "", "level": "", },
                     }
 
             data[user_id][CH_DICT(i)] = temp
@@ -230,7 +229,6 @@ def consume_chapter_token(user_id, chapter):
     available_tokens = db.child("personal-data").child(user_id).child("chapter-tokens").child(
         CH_DICT(chapter)).get().val()
 
-    print("AVAILABLE_TOKENS: ", available_tokens)
     if available_tokens == 0:
         return False
 
@@ -291,6 +289,7 @@ def get_user_dashboard_table(user_id):
 
     return data
 
+
 def set_generated_chapter(user_id, chapter, text, params, gen_idx):
     data = {"text": text,
             "creativity": params["creativity"],
@@ -300,6 +299,12 @@ def set_generated_chapter(user_id, chapter, text, params, gen_idx):
 
     db.child("user-book").child(user_id).child(CH_DICT(chapter)).child(f"gen{gen_idx}").update(data)
 
+
+def save_edited_chapters(user_id, chapter, gen1, gen2, gen3):
+
+    db.child("user-book").child(user_id).child(CH_DICT(chapter)).child("gen1").update({"text": gen1})
+    db.child("user-book").child(user_id).child(CH_DICT(chapter)).child("gen2").update({"text": gen2})
+    db.child("user-book").child(user_id).child(CH_DICT(chapter)).child("gen3").update({"text": gen3})
 
 
 # For testing purposes

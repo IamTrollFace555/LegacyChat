@@ -17,7 +17,11 @@ class Template:
             prompt += f"* {key}: {value}\n"
 
         prompt += ("\n\nThis person wants to write a book about their life, an autobiography. Using the answers " +
-                   "provided by the person, write the foreword for the book.\n\nUse the following traits:\n"
+                   "provided by the person, write the foreword for the book. Do not mention the fact that the person "
+                   f"answered a questionnaire. Do not include things such as 'on question 19 ...' or mention literal "
+                   f"answers from the questionnaire. Since this is an autobiography, the text should be in first "
+                   f"person form, as if you were that person telling your own story.\n\nUse the"
+                   f"following traits:\n"
                    + f"Tone: {params['tone']}. This means that you have to write using a {params['tone']} tone.\n" +
                    f"Writing Level: {params['tone']}. This means you need like a {params['tone']} ")
 
@@ -49,9 +53,13 @@ class Template:
             prompt += f"* {key}: {value}\n"
 
         prompt += ("\n\nThis person wants to write a book about their life, an autobiography. Using the answers " +
-                   f"provided by the person, write a chapter for the book.\n\nThe name of the chapter is:" +
+                   f"provided by the person, write a chapter for the book. Do not mention the fact that the user "
+                   f"answered a questionnaire. Do not include things such as 'on question 19 ...' or mention literal "
+                   f"answers from the questionnaire. Since this is an autobiography, the text should be in first "
+                   f"person form, as if you were that person telling your own story..\n\nThe name of the "
+                   f"chapter is:" +
                    f"{chapter_name}\n\nUse the following traits:\n"
                    + f"Tone: {params['tone']}. This means that you have to write using a {params['tone']} tone.\n" +
-                   f"Writing Level: {params['level']}. This means you need like a {params['level']} ")
+                   f"Writing Level: {params['level']}. This means you need like a {params['level']}")
 
         return self.writer_prompt + prompt

@@ -9,6 +9,7 @@ from fireapp.views import (
     get_user_dashboard_table,
     user_chapter_setup,
     set_generated_chapter,
+    save_edited_chapters,
 )
 
 from .modules.titles import (
@@ -116,92 +117,114 @@ def questionnaire(request):
 
 
 def chapter_edit(request):
+    # try:
+    user_id = request.session.get("user_id")
+
+    # Handle if the request comes from a POST form or from the 'generate_chapter()' view
+    chapter = ""
+    error = ""
+    try:
+        chapter = str(request.session.get("chapter"))
+        if chapter is None:
+            raise ValueError("No chapter stored in session!")
+        if int(request.session.get("failed")):
+            error = True
+
+    except:
+        if request.method == "POST":
+            response = request.POST
+            chapter = response["chapter"]
+            error = False
+
+    # Show the texts stored in the database
+    pages = get_user_book_chapters(user_id, chapter)
+    if pages is None:
+        user_chapter_setup(user_id)
+        pages = get_user_book_chapters(user_id, chapter)
+
+    temp = {key: pages[key]["text"] for key in pages}
+
+    prevs = {}
+
+    for key, value in temp.items():
+        prevs[key] = value[: min(200, len(value))] + ("..." if len(value) > 200 else "")
+
+    flag = ""
+    if error:
+        flag = "You've reached the chapter generation limit!"
+
+    try:
+        del request.session['failed']
+        del request.session['chapter']
+    except KeyError:
+        pass
+
+    return render(
+        request,
+        "edit.html",
+        {"chapter": chapter, "chapter_name": TITLE_DICT[chapter], "pages": pages, "prevs": prevs, "flag": flag})
+
+    # except:
+    #     print("EXCEPTION!")
+    #     pass
+
+
+def generate_chapter(request):
     try:
         user_id = request.session.get("user_id")
+        if request.method == "POST":
+            response = request.POST
+            chapter = response["chapter"]
+            creativity = response["Creativity"]
+            tone = response["Tone"]
+            level = response["WritingLevel"]
 
-        # Handle if the request comes from a POST form or from the 'generate_chapter()' view
-        chapter = ""
-        error = ""
-        try:
-            chapter = request.session.get("chapter")
-            if chapter is None:
-                raise ValueError("No chapter stored in session!")
-            if int(request.session.get("failed")):
-                error = True
-        except:
-            if request.method == "POST":
-                response = request.POST
-                chapter = response["chapter"]
-                error = False
-
-        # Show the texts stored in the database
-        pages = get_user_book_chapters(user_id, chapter)
-        if pages is None:
-            user_chapter_setup(user_id)
             pages = get_user_book_chapters(user_id, chapter)
 
-        temp = {key: pages[key]["text"] for key in pages}
+            params = {"creativity": creativity, "tone": tone, "level": level}
 
-        prevs = {}
+            if consume_chapter_token(user_id, chapter):
+                new_gen = generate_chapter_API(user_id, chapter, params)
+                # new_gen = "Changed!"
 
-        for key, value in temp.items():
-            prevs[key] = value[: min(100, len(value))] + ("..." if len(value) > 100 else "")
+                texts = []
+                for dic in pages.values():
+                    texts.append(dic["text"])
 
-        flag = ""
-        if error:
-            flag = "You've reached the chapter generation limit!"
+                try:
+                    gen_idx = texts.index("") + 1
+                except:
+                    gen_idx = 1
 
-        try:
-            del request.session['chapter']
-            del request.session['failed']
-        except KeyError:
-            pass
+                set_generated_chapter(user_id, chapter, new_gen, params, gen_idx)
+            else:
+                request.session["failed"] = 1
 
-        return render(
-            request,
-            "edit.html",
-            {"chapter": chapter, "chapter_name": TITLE_DICT[chapter], "pages": pages, "prevs": prevs, "flag": flag})
+            request.session["chapter"] = chapter
+            return redirect("../chapter-edit/")
 
     except:
         pass
 
 
-def generate_chapter(request):
-    # try:
-    user_id = request.session.get("user_id")
-    if request.method == "POST":
-        response = request.POST
-        chapter = response["chapter"]
-        creativity = response["Creativity"]
-        tone = response["Tone"]
-        level = response["WritingLevel"]
+def save_answers(request):
+    try:
+        user_id = request.session.get("user_id")
+        if request.method == "POST":
+            response = request.POST
+            chapter = response["chapter"]
 
-        pages = get_user_book_chapters(user_id, chapter)
+            gen1 = response["gen_text_1"]
+            gen2 = response["gen_text_2"]
+            gen3 = response["gen_text_3"]
 
-        params = {"creativity": creativity, "tone": tone, "level": level}
+            save_edited_chapters(user_id, chapter, gen1, gen2, gen3)
 
-        if consume_chapter_token(user_id, chapter):
-            new_gen = generate_chapter_API(user_id, chapter, params)
-            # new_gen = "Changed!"
+            request.session["chapter"] = chapter
+            return redirect("../chapter-edit/")
 
-            texts = []
-            for dic in pages.values():
-                texts.append(dic["text"])
-
-            try:
-                gen_idx = texts.index("")
-            except:
-                gen_idx = 1
-
-            set_generated_chapter(user_id, chapter, new_gen, params, gen_idx)
-        else:
-            request.session["failed"] = 1
-
-        request.session["chapter"] = chapter
-        return redirect("../chapter-edit/")
-
-    # except:
-    #     pass
+    except:
+        pass
 
 
 def logout(request):

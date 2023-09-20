@@ -11,6 +11,15 @@
         .card {
             margin-right: 0px; /* Adjust the margin as needed */
         }
+
+        /* Adjust the off-canvas width and height */
+        .offcanvas {
+          left: 2.5%;
+          padding-left: 2.5%;
+          width: 95%; /* Set the desired width (e.g., 80%) */
+          height: 98vh; /* Set the desired height (e.g., 80vh for 80% of viewport height) */
+        }
+
     </style>
 </head>
 <body>
@@ -147,7 +156,7 @@
     <br><br>
 
     {% if flag != "" %}
-    <div class="alert alert-primary" role="alert">
+    <div class="alert alert-danger" role="alert">
         {{flag}}
     </div>
     {% endif %}
@@ -174,19 +183,19 @@
                             <li>Writing Level: {{pages.gen1.level}}</li>
 
                         </ul>
-                    {% endif %}
 
-                    <p class="d-inline-flex gap-1">
-                      <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft1" role="button" aria-expanded="false" aria-controls="draft1">
-                        Preview
-                      </a>
-                      <a href="#" class="btn btn-primary">Edit</a>
-                    </p>
-                    <div class="collapse" id="draft1">
-                      <div class="card card-body">
-                        {{prevs.gen1}}
-                      </div>
-                    </div>
+                        <p class="d-inline-flex gap-1">
+                          <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft1" role="button" aria-expanded="false" aria-controls="draft1">
+                            Preview
+                          </a>
+                          <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom1" aria-controls="offcanvasBottom1">Edit</button>
+                        </p>
+                        <div class="collapse" id="draft1">
+                          <div class="card card-body">
+                            {{prevs.gen1}}
+                          </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -205,19 +214,19 @@
                             <li>Writing Level: {{pages.gen2.level}}</li>
 
                         </ul>
-                    {% endif %}
 
-                    <p class="d-inline-flex gap-1">
-                      <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft2" role="button" aria-expanded="false" aria-controls="draft2">
-                        Preview
-                      </a>
-                      <a href="#" class="btn btn-primary">Edit!</a>
-                    </p>
-                    <div class="collapse" id="draft2">
-                      <div class="card card-body">
-                        {{prevs.gen2}}
-                      </div>
-                    </div>
+                        <p class="d-inline-flex gap-1">
+                          <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft2" role="button" aria-expanded="false" aria-controls="draft2">
+                            Preview
+                          </a>
+                          <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom2" aria-controls="offcanvasBottom2">Edit</button>
+                        </p>
+                        <div class="collapse" id="draft2">
+                          <div class="card card-body">
+                            {{prevs.gen2}}
+                          </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -236,23 +245,110 @@
                             <li>Writing Level: {{pages.gen3.level}}</li>
 
                         </ul>
-                    {% endif %}
 
-                    <p class="d-inline-flex gap-1">
-                      <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft3" role="button" aria-expanded="false" aria-controls="draft3">
-                        Preview
-                      </a>
-                      <a href="#" class="btn btn-primary">Edit!</a>
-                    </p>
-                    <div class="collapse" id="draft3">
-                      <div class="card card-body">
-                        {{prevs.gen3}}
-                      </div>
-                    </div>
+                        <p class="d-inline-flex gap-1">
+                          <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft3" role="button" aria-expanded="false" aria-controls="draft3">
+                            Preview
+                          </a>
+                          <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom3" aria-controls="offcanvasBottom3">Edit</button>
+                        </p>
+                        <div class="collapse" id="draft3">
+                          <div class="card card-body">
+                            {{prevs.gen3}}
+                          </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
+
+    <br><br>
+
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <a href="../" class="btn btn-primary" style="width: 30%">Return to Dashboard</a>
+        </div>
+
+    </div>
+
+
+    <br><br>
+
+    <!-- ========================================= Off-Canvas / Form ============================================== -->
+
+<form action="../save-answers/" method="POST" name="save-texts" id="save-texts">{% csrf_token %}
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom1" aria-labelledby="offcanvasBottomLabel1">
+      <div class="offcanvas-header">
+        <h1 class="offcanvas-title" id="offcanvasBottomLabel1">Edit Draft 1</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body small"> <!-- ----- Body ----- -->
+
+        <hr> <br><br><br>
+
+
+        <div class="form-group">
+          <label for="gen_text_1"> <h4>Here's your generated text. You may edit it however you'd like:</h4> </label> <br><br>
+          <textarea class="form-control" id="gen_text_1" rows="25" form="save-texts" name="gen_text_1">{{pages.gen1.text}}</textarea>
+
+          <br>
+
+          <button style="width: 50%;" type="submit" class="btn btn-primary text-" id="saveText">Save answers!</button>
+        </div>
+
+
+      </div>
+    </div>
+
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom2" aria-labelledby="offcanvasBottomLabel2">
+      <div class="offcanvas-header">
+        <h1 class="offcanvas-title" id="offcanvasBottomLabel2">Edit Draft 2</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body small"> <!-- ----- Body ----- -->
+
+        <hr> <br><br><br>
+
+        <div class="form-group">
+          <label for="gen_text_2"> <h4>Here's your generated text. You may edit it however you'd like:</h4> </label> <br><br>
+          <textarea class="form-control" id="gen_text_2" rows="25" form="save-texts" name="gen_text_2">{{pages.gen2.text}}</textarea>
+
+          <br>
+
+          <button style="width: 50%;" type="submit" class="btn btn-primary text-" id="saveText2">Save answers!</button>
+        </div>
+
+
+      </div>
+    </div>
+
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom3" aria-labelledby="offcanvasBottomLabel3">
+      <div class="offcanvas-header">
+        <h1 class="offcanvas-title" id="offcanvasBottomLabel3">Edit Draft 3</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body small"> <!-- ----- Body ----- -->
+
+        <hr> <br><br><br>
+
+        <div class="form-group">
+          <label for="gen_text_3"> <h4>Here's your generated text. You may edit it however you'd like:</h4> </label> <br><br>
+          <textarea class="form-control" id="gen_text_3" rows="25" form="save-texts" name="gen_text_3">{{pages.gen3.text}}</textarea>
+
+          <br>
+
+          <button style="width: 50%;" type="submit" class="btn btn-primary text-" id="saveText3">Save answers!</button>
+        </div>
+
+
+      </div>
+    </div>
+
+    <input type="hidden" name="chapter" value="{{chapter}}">
+</form>
+
+
 
 </div>
 

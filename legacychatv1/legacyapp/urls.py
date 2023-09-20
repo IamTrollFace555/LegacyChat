@@ -10,5 +10,5 @@ urlpatterns = [
     path("dashboard/choose-subchapter/", views.choose_subchapter, name="choose-subchapter"),
     path("dashboard/summary/", views.summary, name="summary"),
     path("dashboard/generate-chapter/", views.generate_chapter, name="generate-chapter"),
-
+    path("dashboard/save-answers/", views.save_answers, name="save-answers"),
 ]
