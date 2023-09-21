@@ -216,7 +216,7 @@ def user_chapter_setup(user_id) -> bool:
                     "gen3": {"text": "", "creativity": "", "tone": "", "level": "", },
                     }
 
-            data[user_id][CH_DICT(i)] = temp
+            data[user_id][CH_DICT(str(i))] = temp
 
         db.child("user-book").set(data)
         return True
@@ -281,10 +281,11 @@ def get_user_dashboard_table(user_id):
                 data[f"chapter{ch}"]["questions"] = "Go"
 
         # Chapter Draft
-        texts = get_user_book_chapters(user_id, ch)
-        texts = [texts["gen1"]["text"], texts["gen2"]["text"], texts["gen3"]["text"]]
-
-        print("chapter: ", chapter, "texts: ", texts)
+        try:
+            texts = get_user_book_chapters(user_id, ch)
+            texts = [texts["gen1"]["text"], texts["gen2"]["text"], texts["gen3"]["text"]]
+        except:
+            texts = ["", "", ""]
 
         try:
             texts.index("")
