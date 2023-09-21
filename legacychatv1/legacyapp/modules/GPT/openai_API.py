@@ -10,7 +10,6 @@ openai.api_key = "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"
 
 def generate_chapter_API(user_id, chapter, params=None):
     # Generate prompt
-    print("IN HERE!")
 
     questions = get_questionnaire(chapter)
     answers = get_user_answers(user_id, chapter)
@@ -29,7 +28,7 @@ def generate_chapter_API(user_id, chapter, params=None):
     model = "gpt-3.5-turbo-16k"
     messages = [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(model=model, messages=messages, max_tokens=12000,
-                                            temperature=float(params["creativity"]) * 0.3)
+                                            temperature=float(params["creativity"]) * 0.2)
     generated_text = response["choices"][0]["message"]["content"]
 
     return generated_text

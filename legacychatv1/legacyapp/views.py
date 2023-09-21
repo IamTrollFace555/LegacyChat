@@ -170,41 +170,41 @@ def chapter_edit(request):
 
 
 def generate_chapter(request):
-    try:
-        user_id = request.session.get("user_id")
-        if request.method == "POST":
-            response = request.POST
-            chapter = response["chapter"]
-            creativity = response["Creativity"]
-            tone = response["Tone"]
-            level = response["WritingLevel"]
+    # try:
+    user_id = request.session.get("user_id")
+    if request.method == "POST":
+        response = request.POST
+        chapter = response["chapter"]
+        creativity = response["Creativity"]
+        tone = response["Tone"]
+        level = response["WritingLevel"]
 
-            pages = get_user_book_chapters(user_id, chapter)
+        pages = get_user_book_chapters(user_id, chapter)
 
-            params = {"creativity": creativity, "tone": tone, "level": level}
+        params = {"creativity": creativity, "tone": tone, "level": level}
 
-            if consume_chapter_token(user_id, chapter):
-                new_gen = generate_chapter_API(user_id, chapter, params)
-                # new_gen = "Changed!"
+        if consume_chapter_token(user_id, chapter):
+            new_gen = generate_chapter_API(user_id, chapter, params)
+            # new_gen = "Changed!"
 
-                texts = []
-                for dic in pages.values():
-                    texts.append(dic["text"])
+            texts = []
+            for dic in pages.values():
+                texts.append(dic["text"])
 
-                try:
-                    gen_idx = texts.index("") + 1
-                except:
-                    gen_idx = 1
+            try:
+                gen_idx = texts.index("") + 1
+            except:
+                gen_idx = 1
 
-                set_generated_chapter(user_id, chapter, new_gen, params, gen_idx)
-            else:
-                request.session["failed"] = 1
+            set_generated_chapter(user_id, chapter, new_gen, params, gen_idx)
+        else:
+            request.session["failed"] = 1
 
-            request.session["chapter"] = chapter
-            return redirect("../chapter-edit/")
+        request.session["chapter"] = chapter
+        return redirect("../chapter-edit/")
 
-    except:
-        pass
+    # except:
+    #     pass
 
 
 def save_answers(request):

@@ -145,6 +145,9 @@ def save_answers(request):
 
             if completed:
                 db.child("personal-data").child(ID).child("completed-chapters").child(CH_DICT(chapter)).set(True)
+            else:
+                db.child("personal-data").child(ID).child("completed-chapters").child(CH_DICT(chapter)).set(False)
+
 
         try:
             if response["exit"] == "false":
