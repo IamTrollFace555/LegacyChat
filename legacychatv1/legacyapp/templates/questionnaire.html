@@ -270,8 +270,6 @@
     showNextQuestion()
   }
 
-
-
   p = document.getElementById("question_list")
   p.innerHTML = "The questions to be answered for this sub-chapter are:{% for idx in indices_int %} {{idx}},{% endfor %}".slice(0, -1)
 

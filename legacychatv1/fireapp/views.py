@@ -88,12 +88,6 @@ def register(request):
 
         db.child("personal-data").child(ID).set(data)
 
-        data2 = {"profile": ""}
-        for idx in range(1, len(QUESTIONNAIRE_DICT)):
-            data2[CH_DICT(str(idx))] = ""
-
-        db.child("user-book").child(ID).set(data2)
-
         return render(request, "thankyou.html")
 
 
@@ -129,6 +123,8 @@ def save_answers(request):
         response = request.POST
         chapter = response["chapter"]
 
+        print("DATA SAVED!")
+
         data = {}
 
         completed = True
@@ -141,7 +137,7 @@ def save_answers(request):
 
         if request.session.get("user_id"):
             ID = request.session.get("user_id")
-            db.child("user-answers").child(ID).child(QUESTIONNAIRE_DICT[chapter]).set(data)
+            db.child("user-answers").child(ID).child(QUESTIONNAIRE_DICT[chapter]).update(data)
 
             if completed:
                 db.child("personal-data").child(ID).child("completed-chapters").child(CH_DICT(chapter)).set(True)
@@ -242,7 +238,6 @@ def consume_chapter_token(user_id, chapter):
 
 def get_user_dashboard_table(user_id):
     # Pictures
-    print("IN")
 
     data = {
         "chapter0": {"pictures": 0},
@@ -272,7 +267,6 @@ def get_user_dashboard_table(user_id):
             for ans in answers.values():
                 if ans == "":
                     finished = False
-                    print("NOT FINISHED!")
                 else:
                     started = True
 

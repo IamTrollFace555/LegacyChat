@@ -451,7 +451,132 @@ function submitUserSelections() {
 
 </script>
 
+<script>
+  let currentQuestion = 1;
+  var totalQuestions = document.getElementsByClassName('question').length;
+  const list = "{{indices}}".split(" ");
+  const arrOfNum = list.map(str => {return parseInt(str, 10);});
+  setInterval(saveAnswers, 2 * 60 * 1000);
 
+  function showQuestion(questionNumber) {
+    var questions = document.getElementsByClassName('question');
+    for (var i = 0; i < questions.length; i++) {
+      questions[i].style.display = 'none';
+    }
+    document.getElementById('quest' + questionNumber).style.display = 'block';
+    console.log(currentQuestion)
+  }
+
+  function skipQuestion() {
+    var question = document.getElementById('question' + currentQuestion);
+    if (question.innerHTML === "") {
+      question.innerHTML = "Skip question";
+    }
+    showNextQuestion();
+  }
+
+  function showNextQuestion() {
+    if (currentQuestion < totalQuestions) {
+      currentQuestion++;
+      while (!(arrOfNum.includes(currentQuestion)) && currentQuestion < totalQuestions) {
+        console.log(currentQuestion)
+        currentQuestion++;
+      }
+
+      if (currentQuestion === totalQuestions && !(arrOfNum.includes(currentQuestion))){
+        showPreviousQuestion()
+      }
+      else {
+        showQuestion(currentQuestion);
+      }
+    }
+  }
+    function showPreviousQuestion() {
+    if (currentQuestion > 1) {
+      currentQuestion--;
+      while (!(arrOfNum.includes(currentQuestion)) && currentQuestion > 1) {
+        console.log(currentQuestion)
+        currentQuestion--;
+      }
+
+      if (currentQuestion === 1 && !(arrOfNum.includes(currentQuestion))){
+        showNextQuestion()
+      }
+      else {
+        showQuestion(currentQuestion);
+      }
+
+    }
+  }
+
+  function goToQuestion() {
+    var questionNumberInput = document.getElementById('gotoQuestion');
+    var questionNumber = parseInt(questionNumberInput.value);
+
+    if (questionNumber >= 1 && questionNumber <= totalQuestions && arrOfNum.includes(questionNumber)) {
+      currentQuestion = questionNumber;
+      showQuestion(currentQuestion);
+    }
+
+
+    questionNumberInput.value = '';
+  }
+
+  function saveAnswers() {
+    var form = document.querySelector('form');
+    var formData = new FormData(form);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "../../fireapp/save-answers/", true);
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          // Successful response
+          console.log(xhr.responseText);
+        } else {
+          // Error handling
+          console.error("Error: " + xhr.status);
+        }
+      }
+    };
+
+    //update status footer
+    const now = new Date()
+    var foot1 = document.getElementById("footnote1");
+    var foot2 = document.getElementById("footnote2");
+    foot1.innerHTML = `Answers Saved!`;
+    foot1.style.display = "inline-block"
+
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    };
+    const americanDateTime = new Intl.DateTimeFormat("en-US", options).format;
+    const save_time = americanDateTime(now)
+
+    foot2.innerHTML = `     ${save_time}`;
+    foot2.style.color = "#909090"
+    foot2.style.display = "inline-block"
+
+    xhr.send(formData);
+  }
+
+  if (arrOfNum.includes(1)) {
+    showQuestion(currentQuestion);
+  }
+  else {
+    showNextQuestion()
+  }
+
+
+
+  p = document.getElementById("question_list")
+  p.innerHTML = "The questions to be answered for this sub-chapter are:{% for idx in indices_int %} {{idx}},{% endfor %}".slice(0, -1)
+
+
+</script>
 
 
 </body>

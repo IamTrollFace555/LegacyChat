@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Summary</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% load static %}
+    {% load custom_filters %}
+
+</head>
+<body>
+<div class="container-fluid">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="width: 100%">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'logo2.png' %}" alt="Logo" width="199" height="50">
+            </a>
+        </div>
+    </nav>
+
+
+    <!-- Page Content -->
+    <div class="container mt-4">
+        <h1 class="display-4">Summary</h1>
+        <h2 class="mb-4">{{chapter_name| safe}}</h2>
+
+        <!-- Questions and Answers Section -->
+        <form action="" method="POST" name="save-texts" id="save-texts">{% csrf_token %}
+        {% for idx in idxs %}
+        {% with question=questions|get_attribute:idx%}
+        {% with answer=answers|get_attribute:idx %}
+        <div class="accordion" id="acc{{idx}}">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{idx}}" aria-expanded="true" aria-controls="collapse{{idx}}">
+                <label for="question{{question.question_idx}}">{{forloop.counter}}. {{question}}</label>
+
+                    {% if answer == "" %}
+                        <span class="badge bg-secondary">Not answered yet</span>
+                    {% endif %}
+              </button>
+            </h2>
+            <div id="collapse{{idx}}" class="accordion-collapse collapse" data-bs-parent="#{{idx}}">
+              <div class="accordion-body">
+                <div id="collapseExample{{idx}}">
+                  {% if answer != "" %}
+                  <div class="card card-body">
+                    <textarea class="form-control" id="{{idx}}" name="{{idx}}" rows="5" form="save-texts">{{answer}}</textarea>
+                  </div>
+                  {% endif %}
+                </div>
+                <br><br>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        {% endwith %}
+        {% endwith %}
+        {% endfor %}
+
+        <input type="hidden" name="chapter" value="{{chapter}}">
+
+        <button type="button" class="btn btn-primary" onclick="saveAnswers()">Save</button>
+        <button formaction="../../fireapp/save-answers/" class="btn btn-primary">Save and exit!</button>
+        <button formaction="../chapter-edit/" class="btn btn-primary">Go to Generate Chapter</button>
+        </form>
+
+    </div>
+</div>
+
+<footer>
+    <p id="footnote1"></p>
+    <p id="footnote2"></p>
+</footer>
+
+
+<script>
+  setInterval(saveAnswers, 2 * 60 * 1000);
+  summaryForm = document.getElementById("save-texts")
+  summaryForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    saveAnswers();
+    sendData();
+  });
+
+  function sendData() {
+    const XHR = new XMLHttpRequest();
+
+    // Bind the FormData object and the form element
+    const FD = new FormData(summaryForm);
+
+    // Define what happens on successful data submission
+    XHR.addEventListener("load", (event) => {
+      alert(event.target.responseText);
+    });
+
+    // Define what happens in case of error
+    XHR.addEventListener("error", (event) => {
+      alert("Oops! Something went wrong.");
+      console.log("ERROR!")
+    });
+
+    // Set up our request
+    XHR.open("POST", "../chapter-edit/");
+
+    // The data sent is what the user provided in the form
+    XHR.send(FD);
+  }
+
+
+
+  function saveAnswers() {
+    var form = document.querySelector('form');
+    var formData = new FormData(form);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "../../fireapp/save-answers/", true);
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          // Successful response
+          console.log(xhr.responseText);
+        } else {
+          // Error handling
+          console.error("Error: " + xhr.status);
+        }
+      }
+    };
+
+    //update status footer
+    const now = new Date()
+    var foot1 = document.getElementById("footnote1");
+    var foot2 = document.getElementById("footnote2");
+    foot1.innerHTML = `Answers Saved!`;
+    foot1.style.display = "inline-block"
+
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    };
+    const americanDateTime = new Intl.DateTimeFormat("en-US", options).format;
+    const save_time = americanDateTime(now)
+
+    foot2.innerHTML = `     ${save_time}`;
+    foot2.style.color = "#909090"
+    foot2.style.display = "inline-block"
+
+    xhr.send(formData);
+  }
+
+
+  p = document.getElementById("question_list")
+  p.innerHTML = "The questions to be answered for this sub-chapter are:{% for idx in indices_int %} {{idx}},{% endfor %}".slice(0, -1)
+
+
+</script>
+
+</body>
+</html>

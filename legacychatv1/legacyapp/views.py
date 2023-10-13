@@ -208,6 +208,7 @@ def generate_chapter(request):
 
 
 def save_answers(request):
+    print("SAVEDDDDDDDDDD")
     try:
         user_id = request.session.get("user_id")
         if request.method == "POST":
@@ -261,6 +262,42 @@ def summary(request):
     except:
         pass
 
+
+def summary2(request):
+    try:
+        user_id = request.session.get("user_id")
+        if request.method == "POST":
+            response = request.POST
+            chapter = response["chapter"]
+            flag = ""
+
+            try:
+                questions = get_questionnaire(chapter)
+                answers = get_user_answers(user_id, chapter)
+                idxs = [f"question{i}" for i in range(1, len(questions) + 1)]
+            except:
+                flag = "Nothing here yet!"
+
+            data = {"questions": questions, "answers": answers, "idxs": idxs, "flag": flag,
+                    "chapter_name": TITLE_DICT[chapter], "chapter":chapter}
+
+            return render(
+                request,
+                "summary_v2.html",
+                data)
+
+    except:
+        pass
+
+def dashboard2(request):
+    if request.session.get("user_id"):
+        user_id = request.session.get("user_id")
+        data = get_user_personal_data(user_id)
+
+        data["table"] = get_user_dashboard_table(user_id)
+        data["names"] = SHORT_NAMES
+
+        return render(request, "dashboard_v2.html", data)
 
 # ======================================= HELPER FUNCTIONS ======================================= #
 def create_summary(user_id, chapter):
