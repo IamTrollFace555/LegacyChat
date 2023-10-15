@@ -491,11 +491,12 @@ function submitUserSelections() {
   form.submit();
 }
 
+ // ========================================================================= REMEMBER TO UNCOMMENT THIS SECTION OF CODE=========================================================================
  // Add a click event listener to the trigger element (e.g., the "Submit" button)
-    document.getElementById('submitForm').addEventListener('click', function () {
-      showSpinner();
-      submitUserSelections();
-    });
+ //    document.getElementById('submitForm').addEventListener('click', function () {
+ //      showSpinner();
+ //      submitUserSelections();
+ //    });
 
   let currentQuestion = 1;
   var totalQuestions = document.getElementsByClassName('question').length;
@@ -601,7 +602,7 @@ function submitUserSelections() {
 
   // Add a click event listener to the trigger element (e.g., the "Submit" button)
   const temp = document.getElementById('temperature');
-  temp.addEventListener('change', function () {
+  temp.addEventListener('click', function () {
     document.getElementById("temp-display").innerHTML = "Chosen temperature: " + temp.value
     console.log(temp.value)
   });
