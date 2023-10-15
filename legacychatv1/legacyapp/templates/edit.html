@@ -34,7 +34,8 @@
         </div>
     </nav>
 </div>
-<div class="container mt-5">
+
+<div class="container mt-5" id="page">
 
     <h1 class="display-4">Chapter Generation</h1>
     <h2 class="mb-4">{{chapter_name| safe}}</h2>
@@ -42,11 +43,43 @@
 
     <h5 class="simple" >It's time to start generating your chapters!</h5>
     <br>
-    <p>Use the buttons below to customize the way your chapter will be generated:</p>
+
+    <!-- ============================================= Custom Prompt ============================================= -->
+    <p> <strong>Recommendations</strong> for writing your prompt:</p>
+    <ul>
+        <li><p>What you write here will be the full and complete prompt passed to the model, so please make sure to give the model enough context about the proyect and what it needs to do.</p></li>
+        <li><p><strong>DO NOT</strong> use double quotes ". This may cause the system to break.</p></li>
+        <li><p>Remember to <strong>save</strong> the prompts you use,  the system will not save them.</p></li>
+        <li><p>The first three texts that you generate will be each be saved in a draft below. Once you have generated three texts the next time you generate a text it will simply overwrite the first draft</p></li>
+        <li>
+            <p>If you want to include the questions and answers for this specific chapter (<strong>{{chapter_name| safe}})</strong> use them writing <strong>{questions}</strong> or <strong>{answers}</strong> in the textbox. See the example below:</p><br>
+            <p>If you write the following in the textbox:</p>
+            <textarea class="form-control" type="text" placeholder="A person wants to write a book about their life. We asked her the following questions:&#10;&#10;{questions}&#10;&#10;&#10;And here are her answers:&#10;&#10;{answers}" rows="8" aria-label="Input example" disabled readonly></textarea>
+            <br>
+            <p>The prompt passed to the model will be something of the form:</p>
+            <textarea class="form-control" type="text"placeholder="A person wants to write a book about their life. We asked her the following questions:&#10;&#10;question1: text for question 1&#10;question2: text for question 2&#10;...&#10;question20: text for question 20&#10;&#10;&#10;And here are her answers:&#10;&#10;answer1: text for answer 1&#10;answer2: text for answer 2&#10;...&#10;answer20: text for answer 20" rows="14" aria-label="Input example" disabled readonly></textarea>
+        </li>
+    </ul>
+    <form method="POST" action="../generate-chapter/">{% csrf_token %}
+        <label for="prompt" class="form-label">Write your prompt here</label>
+        <textarea class="form-control" id="prompt" name="prompt" rows="5">{{answer}}</textarea>
+        <br>
+        <label for="temperature" class="form-label">Choose the temperature for the model</label>
+        <input type="range" class="form-range" min="0" max="2" step="0.1" id="temperature" name="temperature">
+        <p id="temp-display">Chosen temperature: 1 (Recommended)</p>
+
+        <input type="hidden" name="chapter" value="{{chapter}}">
+
+        <button style="width: 50%;" type="submit" class="btn btn-primary text-" id="submitPrompt" onclick="showSpinner()">Generate Chapter!</button>
+    </form>
     <br><br>
 
     <!-- ============================================ Chapter Options ============================================ -->
 
+    <!--
+    {% comment %}
+    <p>Use the buttons below to customize the way your chapter will be generated:</p>
+    <br><br>
     <div class="accordion" id="Creativity">
       <div class="accordion-item">
         <h2 class="accordion-header">
@@ -119,7 +152,7 @@
         </h2>
         <div id="collapsewriting" class="accordion-collapse collapse show" data-bs-parent="#WritingLevel">
           <div class="accordion-body">
-            The writing level is what gives the text your personal signature, you can choose the writing level that you like the most. Are you an academic? try the <strong>Experienced Writer</strong> writing level. Would you like to talk about your early years as if it were you in that moment? Try the <strong>School Level Person writing level</strong>
+            The writing level is what gives the text your personal signature, you can choose the writing level that you like the most. Are you an academic? try the <strong>Experienced Writer</strong> writing level. Would you like to talk about your early years as if it were you in that moment? Try the <strong>School Level Person</strong> writing level
             <br><br>
                 <div class="row">
                   <div class="col-md-2">
@@ -141,17 +174,24 @@
     </div>
 
     <br><br>
+    {% endcomment %}
+    -->
 
     <!-- ======================================= Form for Chapter Options ======================================= -->
 
+    <!--
+    {% comment %}
     <div class="container">
       <div class="row justify-content-md-center">
           <form method="POST" action="../generate-chapter/" id="chapter_options">{% csrf_token %}
             <input type="hidden" name="chapter" value="{{chapter}}">
           </form>
-          <button style="width: 50%;" type="button" class="btn btn-primary text-" id="submitForm">Generate Chapter!</button>
+          <button style="width: 50%;" type="button" class="btn btn-primary text-" id="submitForm" onclick="showSpinner()">Generate Chapter!</button>
       </div>
     </div>
+
+    {% endcomment %}
+    -->
 
     <br><br>
 
@@ -348,8 +388,16 @@
     <input type="hidden" name="chapter" value="{{chapter}}">
 </form>
 
+</div>
 
-
+<!-- ========================================= Page loading ============================================== -->
+<div id="loading-spinner" class="d-none container mt-5 text-center" style="padding-top: 15%">
+    <div class="spinner-border text-primary" role="status" style="width: 10rem; height: 10rem;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <br><br><br><br><br>
+    <p style="font-size: x-large">Your chapter is being generated</p>
+    <p style="font-size: x-large">Please do not close or refresh the page.</p>
 </div>
 
 <!-- ============================================ <script> ================================================= -->
@@ -445,13 +493,10 @@ function submitUserSelections() {
 
  // Add a click event listener to the trigger element (e.g., the "Submit" button)
     document.getElementById('submitForm').addEventListener('click', function () {
+      showSpinner();
       submitUserSelections();
     });
 
-
-</script>
-
-<script>
   let currentQuestion = 1;
   var totalQuestions = document.getElementsByClassName('question').length;
   const list = "{{indices}}".split(" ");
@@ -465,14 +510,6 @@ function submitUserSelections() {
     }
     document.getElementById('quest' + questionNumber).style.display = 'block';
     console.log(currentQuestion)
-  }
-
-  function skipQuestion() {
-    var question = document.getElementById('question' + currentQuestion);
-    if (question.innerHTML === "") {
-      question.innerHTML = "Skip question";
-    }
-    showNextQuestion();
   }
 
   function showNextQuestion() {
@@ -507,19 +544,6 @@ function submitUserSelections() {
       }
 
     }
-  }
-
-  function goToQuestion() {
-    var questionNumberInput = document.getElementById('gotoQuestion');
-    var questionNumber = parseInt(questionNumberInput.value);
-
-    if (questionNumber >= 1 && questionNumber <= totalQuestions && arrOfNum.includes(questionNumber)) {
-      currentQuestion = questionNumber;
-      showQuestion(currentQuestion);
-    }
-
-
-    questionNumberInput.value = '';
   }
 
   function saveAnswers() {
@@ -570,11 +594,17 @@ function submitUserSelections() {
     showNextQuestion()
   }
 
+  function showSpinner() {
+        document.getElementById('loading-spinner').classList.remove('d-none');
+        document.getElementById('page').classList.add('d-none');
+    }
 
-
-  p = document.getElementById("question_list")
-  p.innerHTML = "The questions to be answered for this sub-chapter are:{% for idx in indices_int %} {{idx}},{% endfor %}".slice(0, -1)
-
+  // Add a click event listener to the trigger element (e.g., the "Submit" button)
+  const temp = document.getElementById('temperature');
+  temp.addEventListener('change', function () {
+    document.getElementById("temp-display").innerHTML = "Chosen temperature: " + temp.value
+    console.log(temp.value)
+  });
 
 </script>
 

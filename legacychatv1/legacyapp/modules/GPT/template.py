@@ -63,3 +63,19 @@ class Template:
                    f"Writing Level: {params['level']}. This means you need like a {params['level']}")
 
         return self.writer_prompt + prompt
+
+    def chapter_prompt_testing(self, question_dict, answer_dict, params):
+        questions = ""
+        for key, value in question_dict.items():
+            questions += f"{key}: {value}\n"
+
+        answers = ""
+        for key, value in answer_dict.items():
+            answers += f"{key}: {value}\n"
+
+        user_prompt = params["prompt"]
+        prompt = user_prompt.replace("{questions}", questions)
+        prompt = prompt.replace("{answers}", answers)
+
+        print("PROMPT: ", prompt)
+        return prompt

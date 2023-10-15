@@ -32,3 +32,24 @@ def generate_chapter_API(user_id, chapter, params=None):
     generated_text = response["choices"][0]["message"]["content"]
 
     return generated_text
+
+
+def generate_chapter_testing_API(user_id, chapter, params=None):
+    # Generate prompt
+
+    questions = get_questionnaire(chapter)
+    answers = get_user_answers(user_id, chapter)
+    profile_questions = get_questionnaire("0")
+    profile_answers = get_user_answers(user_id, "0")
+    temp = Template()
+
+    prompt = temp.chapter_prompt_testing(questions, answers, params)
+
+    # Make a call to the Open-AI API
+    model = "gpt-3.5-turbo-16k"
+    messages = [{"role": "user", "content": prompt}]
+    response = openai.ChatCompletion.create(model=model, messages=messages, max_tokens=8000,
+                                            temperature=float(params["temperature"]))
+    generated_text = response["choices"][0]["message"]["content"]
+
+    return generated_text

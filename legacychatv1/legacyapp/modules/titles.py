@@ -9,16 +9,18 @@ TITLE_DICT = {
 }
 
 SHORT_NAMES = [
-    ("chapter0", "Author Foreword"),
-    ("chapter1", "The Early Years"),
-    ("chapter2", "Teenage Revelations"),
-    ("chapter3", "Into Adulthood"),
-    ("chapter4", "Personal Milestones"),
-    ("chapter5", "Mature Reflections"),
-    ("chapter6", "Golden Years"),
+    ["chapter0", "Author Foreword", "0"],
+    ["chapter1", "The Early Years", "1"],
+    ["chapter2", "Teenage Revelations", "2"],
+    ["chapter3", "Into Adulthood", "3"],
+    ["chapter4", "Personal Milestones", "4"],
+    ["chapter5", "Mature Reflections", "5"],
+    ["chapter6", "Golden Years", "6"],
 ]
 
 SUBCHAPTER_LIST = {
+
+    "profile": {},
 
     "ch1": {
         "sch0": "",
@@ -37,6 +39,11 @@ SUBCHAPTER_LIST = {
         "sch4": "Challenges and Resilience",  # 13-16
         "sch5": "Milestones and Experiences",  # 17-20
     },
+
+    "ch3": {},
+    "ch4": {},
+    "ch5": {},
+    "ch6": {},
 }
 
 SUBCHAPTER_QUESTIONS = {

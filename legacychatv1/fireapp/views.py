@@ -146,8 +146,11 @@ def save_answers(request):
 
 
         try:
-            if response["exit"] == "false":
-                return redirect("../../dashboard/questionnaire/", chapter=chapter)
+            if response["generate"] == "True":
+                request.session['chapter'] = chapter
+                request.session['failed'] = False
+                return redirect("../../dashboard/chapter-edit/")
+
         except:
             pass
 
@@ -207,7 +210,7 @@ def get_user_book_chapters(user_id, chapter) -> dict or None:
 def user_chapter_setup(user_id) -> bool:
     try:
         NUM_CHAPTERS = 6
-        data = {user_id: {}}
+        data = {}
 
         for i in range(NUM_CHAPTERS + 1):
             temp = {"gen1": {"text": "", "creativity": "", "tone": "", "level": "", },
@@ -215,9 +218,9 @@ def user_chapter_setup(user_id) -> bool:
                     "gen3": {"text": "", "creativity": "", "tone": "", "level": "", },
                     }
 
-            data[user_id][CH_DICT(str(i))] = temp
+            data[CH_DICT(str(i))] = temp
 
-        db.child("user-book").set(data)
+        db.child("user-book").child(user_id).set(data)
         return True
 
     except warnings.warn("Chapter setup failed!"):
@@ -257,7 +260,7 @@ def get_user_dashboard_table(user_id):
 
         if answers is None:
             data[f"chapter{ch}"]["questions"] = "Go"
-            finished = False
+            started = False
 
         else:
             # Check answers and decide status based on them
@@ -291,7 +294,7 @@ def get_user_dashboard_table(user_id):
             text = "Not empty!"
 
         if text is None or text == "":
-            if finished:
+            if started:
                 data[f"chapter{ch}"]["draft"] = "Ready to write"
             else:
                 data[f"chapter{ch}"]["draft"] = "Waiting answers"

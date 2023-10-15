@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .modules.GPT.openai_API import generate_chapter_API
+from .modules.GPT.openai_API import generate_chapter_API, generate_chapter_testing_API
 from fireapp.views import (
     get_user_personal_data,
     get_questionnaire,
@@ -39,6 +39,23 @@ def dashboard(request):
 
         return render(request, "dashboard.html", data)
 
+def dashboard2(request):
+    if request.session.get("user_id"):
+        user_id = request.session.get("user_id")
+        data = get_user_personal_data(user_id)
+
+        data["table"] = get_user_dashboard_table(user_id)
+        data["names"] = [[y for y in x] for x in SHORT_NAMES ]
+        for chapter in range(len(SUBCHAPTER_LIST)):
+            try:
+                data["names"][chapter].append(
+                    [("sch" + str(i), SUBCHAPTER_LIST[CH_DICT(str(chapter))]["sch" + str(i)]) for i in range(1, len(SUBCHAPTER_LIST[CH_DICT(str(chapter))]))])
+            except:
+                data["names"][chapter].append(
+                    [("sch" + str(i), "") for i in
+                     range(1, len(SUBCHAPTER_LIST[CH_DICT(str(chapter))]))])
+
+        return render(request, "dashboard_v2.html", data)
 
 def choose_subchapter(request):
     if request.method == "POST":
@@ -136,11 +153,17 @@ def chapter_edit(request):
             chapter = response["chapter"]
             error = False
 
+    if chapter is None or chapter == "":
+        raise ValueError(f"Chapter must be a string representation of a number, not {chapter}")
+
     # Show the texts stored in the database
     pages = get_user_book_chapters(user_id, chapter)
     if pages is None:
         user_chapter_setup(user_id)
         pages = get_user_book_chapters(user_id, chapter)
+
+    # print("CHAPTER: ", chapter)
+    # print("PAGES: ", pages)
 
     temp = {key: pages[key]["text"] for key in pages}
 
@@ -155,7 +178,7 @@ def chapter_edit(request):
 
     try:
         del request.session['failed']
-        del request.session['chapter']
+        # del request.session['chapter']
     except KeyError:
         pass
 
@@ -170,41 +193,74 @@ def chapter_edit(request):
 
 
 def generate_chapter(request):
-    # try:
+    try:
+        user_id = request.session.get("user_id")
+        if request.method == "POST":
+            response = request.POST
+            chapter = response["chapter"]
+            creativity = response["Creativity"]
+            tone = response["Tone"]
+            level = response["WritingLevel"]
+
+            pages = get_user_book_chapters(user_id, chapter)
+
+            params = {"creativity": creativity, "tone": tone, "level": level}
+
+            if consume_chapter_token(user_id, chapter):
+                new_gen = generate_chapter_API(user_id, chapter, params)
+                # new_gen = "Changed!"
+
+                texts = []
+                for dic in pages.values():
+                    texts.append(dic["text"])
+
+                try:
+                    gen_idx = texts.index("") + 1
+                except:
+                    gen_idx = 1
+
+                set_generated_chapter(user_id, chapter, new_gen, params, gen_idx)
+            else:
+                request.session["failed"] = 1
+
+            request.session["chapter"] = chapter
+            return redirect("../chapter-edit/")
+
+    except:
+        pass
+
+
+def generate_chapter_testing(request):
     user_id = request.session.get("user_id")
     if request.method == "POST":
         response = request.POST
         chapter = response["chapter"]
-        creativity = response["Creativity"]
-        tone = response["Tone"]
-        level = response["WritingLevel"]
+        prompt = response["prompt"]
+        temperature = response["temperature"]
+
+        print("PROMPT: ", prompt)
 
         pages = get_user_book_chapters(user_id, chapter)
 
-        params = {"creativity": creativity, "tone": tone, "level": level}
+        params = {"prompt": prompt, "temperature": temperature}
 
-        if consume_chapter_token(user_id, chapter):
-            new_gen = generate_chapter_API(user_id, chapter, params)
-            # new_gen = "Changed!"
+        new_gen = generate_chapter_testing_API(user_id, chapter, params)
+        # new_gen = "Changed!"
 
-            texts = []
-            for dic in pages.values():
-                texts.append(dic["text"])
+        texts = []
+        for dic in pages.values():
+            texts.append(dic["text"])
 
-            try:
-                gen_idx = texts.index("") + 1
-            except:
-                gen_idx = 1
+        try:
+            gen_idx = texts.index("") + 1
+        except:
+            gen_idx = 1
 
-            set_generated_chapter(user_id, chapter, new_gen, params, gen_idx)
-        else:
-            request.session["failed"] = 1
+        params = {"creativity": temperature, "tone": "Not applicable", "level": "Not applicable"}
+        set_generated_chapter(user_id, chapter, new_gen, params, gen_idx)
 
         request.session["chapter"] = chapter
         return redirect("../chapter-edit/")
-
-    # except:
-    #     pass
 
 
 def save_answers(request):
@@ -288,16 +344,6 @@ def summary2(request):
 
     except:
         pass
-
-def dashboard2(request):
-    if request.session.get("user_id"):
-        user_id = request.session.get("user_id")
-        data = get_user_personal_data(user_id)
-
-        data["table"] = get_user_dashboard_table(user_id)
-        data["names"] = SHORT_NAMES
-
-        return render(request, "dashboard_v2.html", data)
 
 # ======================================= HELPER FUNCTIONS ======================================= #
 def create_summary(user_id, chapter):

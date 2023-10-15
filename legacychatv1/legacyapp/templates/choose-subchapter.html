@@ -106,7 +106,7 @@
         }
 
     </style>
-
+    {% load custom_filters %}
 </head>
 <body>
 <div class="container">
@@ -118,7 +118,7 @@
         <input type="hidden" name="chapter" value="{{chapter}}">
         <button class="whole" style="margin-bottom: 2%; width: 80%; display: inline-block; font-size: larger;" type="submit" id="sch0" name="subchapter" value = "sch0">Full Questionnaire</button><br>
 
-        {% load custom_filters %}
+
 
         {% for sch in counter %}
             {% with subchapter=subchapters|get_attribute:sch %}
