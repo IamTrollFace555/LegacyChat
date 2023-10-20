@@ -1,3 +1,6 @@
+import mimetypes
+
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .modules.GPT.openai_API import generate_chapter_API, generate_chapter_testing_API
 from fireapp.views import (
@@ -18,6 +21,7 @@ from .modules.titles import (
     SUBCHAPTER_LIST,
     CH_DICT,
     SUBCHAPTER_QUESTIONS,
+    QUESTIONNAIRE_DICT,
 
 )
 
@@ -39,23 +43,26 @@ def dashboard(request):
 
         return render(request, "dashboard.html", data)
 
+
 def dashboard2(request):
     if request.session.get("user_id"):
         user_id = request.session.get("user_id")
         data = get_user_personal_data(user_id)
 
         data["table"] = get_user_dashboard_table(user_id)
-        data["names"] = [[y for y in x] for x in SHORT_NAMES ]
+        data["names"] = [[y for y in x] for x in SHORT_NAMES]
         for chapter in range(len(SUBCHAPTER_LIST)):
             try:
                 data["names"][chapter].append(
-                    [("sch" + str(i), SUBCHAPTER_LIST[CH_DICT(str(chapter))]["sch" + str(i)]) for i in range(1, len(SUBCHAPTER_LIST[CH_DICT(str(chapter))]))])
+                    [("sch" + str(i), SUBCHAPTER_LIST[CH_DICT(str(chapter))]["sch" + str(i)]) for i in
+                     range(1, len(SUBCHAPTER_LIST[CH_DICT(str(chapter))]))])
             except:
                 data["names"][chapter].append(
                     [("sch" + str(i), "") for i in
                      range(1, len(SUBCHAPTER_LIST[CH_DICT(str(chapter))]))])
 
         return render(request, "dashboard_v2.html", data)
+
 
 def choose_subchapter(request):
     if request.method == "POST":
@@ -300,15 +307,14 @@ def summary(request):
             chapter = response["chapter"]
             flag = ""
 
-            try:
-                questions = get_questionnaire(chapter)
-                answers = get_user_answers(user_id, chapter)
-                idxs = [f"question{i}" for i in range(1, len(questions) + 1)]
-            except:
-                flag = "Nothing here yet!"
+            questions = get_questionnaire(chapter)
+            answers = get_user_answers(user_id, chapter)
+            idxs = [f"question{i}" for i in range(1, len(questions) + 1)]
 
             data = {"questions": questions, "answers": answers, "idxs": idxs, "flag": flag,
-                    "chapter_name": TITLE_DICT[chapter]}
+                    "chapter_name": TITLE_DICT[chapter], "filename": filename}
+
+            print(filename)
 
             return render(
                 request,
@@ -320,39 +326,61 @@ def summary(request):
 
 
 def summary2(request):
-    try:
-        user_id = request.session.get("user_id")
-        if request.method == "POST":
-            response = request.POST
-            chapter = response["chapter"]
-            flag = ""
+    user_id = request.session.get("user_id")
+    if request.method == "POST":
+        response = request.POST
+        chapter = response["chapter"]
+        flag = ""
 
-            try:
-                questions = get_questionnaire(chapter)
-                answers = get_user_answers(user_id, chapter)
-                idxs = [f"question{i}" for i in range(1, len(questions) + 1)]
-            except:
-                flag = "Nothing here yet!"
+        questions = get_questionnaire(chapter)
+        answers = get_user_answers(user_id, chapter)
+        idxs = [f"question{i}" for i in range(1, len(questions) + 1)]
 
-            data = {"questions": questions, "answers": answers, "idxs": idxs, "flag": flag,
-                    "chapter_name": TITLE_DICT[chapter], "chapter":chapter}
+        data = {"questions": questions, "answers": answers, "idxs": idxs, "flag": flag,
+                "chapter_name": TITLE_DICT[chapter], "chapter": chapter}
 
-            return render(
-                request,
-                "summary_v2.html",
-                data)
+        return render(
+            request,
+            "summary_v2.html",
+            data)
 
-    except:
-        pass
+def download_summary(request):
+    user_id = request.session.get("user_id")
+    if request.method == "POST":
+        response = request.POST
+        chapter = response["chapter"]
+
+        filename = create_summary(user_id, chapter)
+        fl_path = "legacyapp\\static\\" + filename
+
+        fl = open(fl_path, 'r')
+        mime_type, _ = mimetypes.guess_type(fl_path)
+        response = HttpResponse(fl, content_type=mime_type)
+        response['Content-Disposition'] = "attachment; filename=%s" % filename
+        print("RESPONSE: ", response)
+        return response
+
 
 # ======================================= HELPER FUNCTIONS ======================================= #
 def create_summary(user_id, chapter):
     user_data = get_user_personal_data(user_id)
     questions = get_questionnaire(chapter)
+    answers = get_user_answers(user_id, chapter)
+    chapter_name = QUESTIONNAIRE_DICT[chapter]
 
     first_name = user_data["first_name"]
     last_name = user_data["last_name"]
+    path = "legacyapp\\static\\"
 
-    filename = f"{first_name}_{last_name}.txt"
-    with open(filename, "w") as file:
-        pass
+    filename = f"{first_name}_{last_name}.txt".replace(" ", "_")
+    with open(path + filename, "w") as file:
+        file.write(f"Author: {first_name} {last_name}\nChapter name: {chapter_name}\n\n" +
+                   f"=======================================================================\n\n")
+
+        for i in range(1, 21):
+            question = questions[f"question{i}"]
+            answer = answers[f"question{i}"]
+
+            file.write(f"Question {i}: {question}\nAnswer: {answer}\n\n")
+
+    return filename

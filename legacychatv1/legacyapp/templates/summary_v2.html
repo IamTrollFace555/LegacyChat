@@ -37,10 +37,10 @@
           <div class="accordion-item">
             <h2 class="accordion-header">
               <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{idx}}" aria-expanded="true" aria-controls="collapse{{idx}}">
-                <label for="question{{question.question_idx}}">{{forloop.counter}}. {{question}}</label>
+                <label for="question{{question.question_idx}}" style="padding-right: 2%">{{forloop.counter}}. {{question}}</label>
 
                     {% if answer == "" %}
-                        <span class="badge bg-secondary">Not answered yet</span>
+                        &#10;<span class="badge bg-secondary">Not answered yet</span>
                     {% endif %}
               </button>
             </h2>
@@ -68,6 +68,11 @@
         <button type="button" class="btn btn-primary" onclick="saveAnswers()">Save</button>
         <button formaction="../../fireapp/save-answers/" class="btn btn-primary">Save and exit!</button>
         <button formaction="../../fireapp/save-answers/" class="btn btn-primary" name="generate" value="True">Go to Generate Chapter</button>
+        </form>
+        <br>
+        <form action="download-summary/" method="POST">{% csrf_token %}
+            <input type="hidden" name="chapter" value="{{chapter}}">
+            <button type="submit" class="btn btn-primary">Download Summary</button>
         </form>
 
     </div>
