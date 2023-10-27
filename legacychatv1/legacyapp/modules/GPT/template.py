@@ -77,5 +77,4 @@ class Template:
         prompt = user_prompt.replace("{questions}", questions)
         prompt = prompt.replace("{answers}", answers)
 
-        print("PROMPT: ", prompt)
         return prompt

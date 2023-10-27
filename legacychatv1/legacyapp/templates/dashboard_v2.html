@@ -41,8 +41,8 @@
       {% for ch, name, ch_num, counter in names %}
             {% with table_ch=table|get_attribute:ch %}
             <tr>
-                <td>{{name}}</td>
                 {% if name != "Author Foreword" %}
+                <td>{{name}}</td>
                 <td>
                     <form style="text-align: center;" action="questionnaire/" method="POST">{% csrf_token %}
                         <input type="hidden" name="chapter" value="{{ch_num}}">
@@ -59,11 +59,13 @@
                         </div>
                     </form>
                 </td>
+
+                <!--
+                {% comment %}
                 {% else %}
                 <td><label type="buton" class="btn btn-secondary" for="ch{{forloop.counter0}}">{{table_ch.questions}}</label></td>
-                {% endif %}
-
-
+                {% endcomment %}
+                -->
 
                 <td>{{table.chapter0.pictures}}</td>
                 <td><label style="text-decoration: underline; color: #007bff" for="smch{{forloop.counter0}}">Go!</label></td>
@@ -72,14 +74,20 @@
                 {% else %}
                     <td><label style="text-decoration: underline; color: #007bff" for="ech{{forloop.counter0}}">{{table_ch.draft}}</label></td>
                 {% endif %}
+
+                {% endif %}
             </tr>
             {% endwith %}
         {% endfor %}
     </tbody>
   </table>
 
+  <form action="download-book/" method="POST">{% csrf_token %}
+    <button type="submit" class="btn btn-primary">Download Summary</button>
+  </form>
+
   <p>Need to take a break? <a href="logout/">Log out</a></p>
-  <p>Reminder: Only chapters 0, 1 and 2 have questionnaires. The creation of the other questionnaires is still in progress</p>
+  <!-- <p>Reminder: Only chapters 0, 1 and 2 have questionnaires. The creation of the other questionnaires is still in progress</p> -->
 
 
 </div>

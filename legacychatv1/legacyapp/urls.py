@@ -12,7 +12,5 @@ urlpatterns = [
     path("dashboard/summary/download-summary/", views.download_summary, name="download-summary"),
     path("dashboard/generate-chapter/", views.generate_chapter_testing, name="generate-chapter"),
     path("dashboard/save-answers/", views.save_answers, name="save-answers"),
-
-    # TEMP
-    path("dashboard2/", views.dashboard2, name="dashboard2"),
+    path("dashboard/download-book/", views.download_book_pdf, name="download-book"),
 ]

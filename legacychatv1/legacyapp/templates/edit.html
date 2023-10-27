@@ -51,6 +51,8 @@
         <li><p><strong>DO NOT</strong> use double quotes ". This may cause the system to break.</p></li>
         <li><p>Remember to <strong>save</strong> the prompts you use,  the system will not save them.</p></li>
         <li><p>The first three texts that you generate will be each be saved in a draft below. Once you have generated three texts the next time you generate a text it will simply overwrite the first draft</p></li>
+
+        <!--
         <li>
             <p>If you want to include the questions and answers for this specific chapter (<strong>{{chapter_name| safe}})</strong> use them writing <strong>{questions}</strong> or <strong>{answers}</strong> in the textbox. See the example below:</p><br>
             <p>If you write the following in the textbox:</p>
@@ -59,10 +61,11 @@
             <p>The prompt passed to the model will be something of the form:</p>
             <textarea class="form-control" type="text"placeholder="A person wants to write a book about their life. We asked her the following questions:&#10;&#10;question1: text for question 1&#10;question2: text for question 2&#10;...&#10;question20: text for question 20&#10;&#10;&#10;And here are her answers:&#10;&#10;answer1: text for answer 1&#10;answer2: text for answer 2&#10;...&#10;answer20: text for answer 20" rows="14" aria-label="Input example" disabled readonly></textarea>
         </li>
+        -->
     </ul>
     <form method="POST" action="../generate-chapter/">{% csrf_token %}
-        <label for="prompt" class="form-label">Write your prompt here</label>
-        <textarea class="form-control" id="prompt" name="prompt" rows="5">{{answer}}</textarea>
+        <label for="prompt" class="form-label">Edit your prompt below:</label>
+        <textarea class="form-control" id="prompt" name="prompt" rows="15">As a biography author, write  a chapter for my biography, based on the text below, use only the Answers, keep as much detail as possible, language level; high school, tone; familiar.&#10;&#10;&#10;{{text}}</textarea>
         <br>
         <label for="temperature" class="form-label">Choose the temperature for the model</label>
         <input type="range" class="form-range" min="0" max="2" step="0.1" id="temperature" name="temperature">

@@ -25,6 +25,8 @@ from .modules.titles import (
 
 )
 
+from fpdf import FPDF
+
 from random import random
 
 
@@ -189,52 +191,55 @@ def chapter_edit(request):
     except KeyError:
         pass
 
+    text = create_summary(user_id, chapter)
+
     return render(
         request,
         "edit.html",
-        {"chapter": chapter, "chapter_name": TITLE_DICT[chapter], "pages": pages, "prevs": prevs, "flag": flag})
+        {"chapter": chapter, "chapter_name": TITLE_DICT[chapter], "pages": pages, "prevs": prevs, "flag": flag,
+         "text": text})
 
     # except:
     #     print("EXCEPTION!")
     #     pass
 
 
-def generate_chapter(request):
-    try:
-        user_id = request.session.get("user_id")
-        if request.method == "POST":
-            response = request.POST
-            chapter = response["chapter"]
-            creativity = response["Creativity"]
-            tone = response["Tone"]
-            level = response["WritingLevel"]
-
-            pages = get_user_book_chapters(user_id, chapter)
-
-            params = {"creativity": creativity, "tone": tone, "level": level}
-
-            if consume_chapter_token(user_id, chapter):
-                new_gen = generate_chapter_API(user_id, chapter, params)
-                # new_gen = "Changed!"
-
-                texts = []
-                for dic in pages.values():
-                    texts.append(dic["text"])
-
-                try:
-                    gen_idx = texts.index("") + 1
-                except:
-                    gen_idx = 1
-
-                set_generated_chapter(user_id, chapter, new_gen, params, gen_idx)
-            else:
-                request.session["failed"] = 1
-
-            request.session["chapter"] = chapter
-            return redirect("../chapter-edit/")
-
-    except:
-        pass
+# def generate_chapter(request):
+#     try:
+#         user_id = request.session.get("user_id")
+#         if request.method == "POST":
+#             response = request.POST
+#             chapter = response["chapter"]
+#             creativity = response["Creativity"]
+#             tone = response["Tone"]
+#             level = response["WritingLevel"]
+#
+#             pages = get_user_book_chapters(user_id, chapter)
+#
+#             params = {"creativity": creativity, "tone": tone, "level": level}
+#
+#             if consume_chapter_token(user_id, chapter):
+#                 new_gen = generate_chapter_API(user_id, chapter, params)
+#                 # new_gen = "Changed!"
+#
+#                 texts = []
+#                 for dic in pages.values():
+#                     texts.append(dic["text"])
+#
+#                 try:
+#                     gen_idx = texts.index("") + 1
+#                 except:
+#                     gen_idx = 1
+#
+#                 set_generated_chapter(user_id, chapter, new_gen, params, gen_idx)
+#             else:
+#                 request.session["failed"] = 1
+#
+#             request.session["chapter"] = chapter
+#             return redirect("../chapter-edit/")
+#
+#     except:
+#         pass
 
 
 def generate_chapter_testing(request):
@@ -244,8 +249,6 @@ def generate_chapter_testing(request):
         chapter = response["chapter"]
         prompt = response["prompt"]
         temperature = response["temperature"]
-
-        print("PROMPT: ", prompt)
 
         pages = get_user_book_chapters(user_id, chapter)
 
@@ -299,30 +302,28 @@ def logout(request):
     return redirect("../../")
 
 
-def summary(request):
-    try:
-        user_id = request.session.get("user_id")
-        if request.method == "POST":
-            response = request.POST
-            chapter = response["chapter"]
-            flag = ""
-
-            questions = get_questionnaire(chapter)
-            answers = get_user_answers(user_id, chapter)
-            idxs = [f"question{i}" for i in range(1, len(questions) + 1)]
-
-            data = {"questions": questions, "answers": answers, "idxs": idxs, "flag": flag,
-                    "chapter_name": TITLE_DICT[chapter], "filename": filename}
-
-            print(filename)
-
-            return render(
-                request,
-                "summary.html",
-                data)
-
-    except:
-        pass
+# def summary(request):
+#     try:
+#         user_id = request.session.get("user_id")
+#         if request.method == "POST":
+#             response = request.POST
+#             chapter = response["chapter"]
+#             flag = ""
+#
+#             questions = get_questionnaire(chapter)
+#             answers = get_user_answers(user_id, chapter)
+#             idxs = [f"question{i}" for i in range(1, len(questions) + 1)]
+#
+#             data = {"questions": questions, "answers": answers, "idxs": idxs, "flag": flag,
+#                     "chapter_name": TITLE_DICT[chapter]}
+#
+#             return render(
+#                 request,
+#                 "summary.html",
+#                 data)
+#
+#     except:
+#         pass
 
 
 def summary2(request):
@@ -337,12 +338,13 @@ def summary2(request):
         idxs = [f"question{i}" for i in range(1, len(questions) + 1)]
 
         data = {"questions": questions, "answers": answers, "idxs": idxs, "flag": flag,
-                "chapter_name": TITLE_DICT[chapter], "chapter": chapter}
+                "chapter_name": TITLE_DICT[chapter], "chapter": chapter, "text": text}
 
         return render(
             request,
             "summary_v2.html",
             data)
+
 
 def download_summary(request):
     user_id = request.session.get("user_id")
@@ -350,7 +352,7 @@ def download_summary(request):
         response = request.POST
         chapter = response["chapter"]
 
-        filename = create_summary(user_id, chapter)
+        filename = create_summary(user_id, chapter, file=True)
         fl_path = "legacyapp\\static\\" + filename
 
         fl = open(fl_path, 'r')
@@ -361,8 +363,25 @@ def download_summary(request):
         return response
 
 
+def download_book_pdf(request):
+    user_id = request.session.get("user_id")
+    print("USER_ID:", user_id)
+    if request.method == "POST":
+        filename = create_book_pdf(user_id)
+        fl_path = "legacyapp/static/" + filename
+
+        fl = open(fl_path, 'rb')
+        mime_type, _ = mimetypes.guess_type(fl_path)
+        print("MIME_TYPE:", mime_type)
+        print("FILE:", fl)
+        response = HttpResponse(fl, content_type=mime_type)
+        response['Content-Disposition'] = "attachment; filename=%s" % filename
+        print("RESPONSE: ", response)
+        return response
+
+
 # ======================================= HELPER FUNCTIONS ======================================= #
-def create_summary(user_id, chapter):
+def create_summary(user_id, chapter, file=False):
     user_data = get_user_personal_data(user_id)
     questions = get_questionnaire(chapter)
     answers = get_user_answers(user_id, chapter)
@@ -372,15 +391,62 @@ def create_summary(user_id, chapter):
     last_name = user_data["last_name"]
     path = "legacyapp\\static\\"
 
-    filename = f"{first_name}_{last_name}.txt".replace(" ", "_")
-    with open(path + filename, "w") as file:
-        file.write(f"Author: {first_name} {last_name}\nChapter name: {chapter_name}\n\n" +
-                   f"=======================================================================\n\n")
+    if file:
+        filename = f"{first_name}_{last_name}.txt".replace(" ", "_")
+        with open(path + filename, "w") as file:
+            file.write(f"Author: {first_name} {last_name}\nChapter name: {chapter_name}\n\n" +
+                       f"=======================================================================\n\n")
 
+            for i in range(1, 21):
+                question = questions[f"question{i}"]
+                answer = answers[f"question{i}"]
+
+                file.write(f"Question {i}: {question}\nAnswer: {answer}\n\n")
+
+        return filename
+
+    else:
+        text = ""
         for i in range(1, 21):
             question = questions[f"question{i}"]
             answer = answers[f"question{i}"]
 
-            file.write(f"Question {i}: {question}\nAnswer: {answer}\n\n")
+            text += f"Question {i}: {question}\nAnswer: {answer}\n\n"
 
+        return text
+
+
+def create_book_pdf(user_id):
+    pdf = FPDF()
+
+    user_data = get_user_personal_data(user_id)
+    first_name = user_data["first_name"]
+    last_name = user_data["last_name"]
+
+    gen = 1
+
+    pdf.add_page()
+
+    for chapter in range(1, 7):
+        pdf.set_font("Times", size=15)
+        pdf.multi_cell(0, 10, txt=QUESTIONNAIRE_DICT[str(chapter)], align='L')
+
+        pages = get_user_book_chapters(user_id, str(chapter))
+        if pages is None:
+            user_chapter_setup(user_id)
+            pages = get_user_book_chapters(user_id, str(chapter))
+
+        temp = {key: pages[key]["text"] for key in pages}
+        text = temp[f"gen{gen}"]
+
+        pdf.set_font("Times", size=12)
+        pdf.multi_cell(0, 10, txt=text, align='L')
+
+    # save the pdf with name .pdf
+    path = "legacyapp/static/"
+    filename = f"{first_name}_{last_name}.pdf".replace(" ", "_")
+
+    pdf.output(path + filename)
+
+    print("PDF CREATED")
     return filename
