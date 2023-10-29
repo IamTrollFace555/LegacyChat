@@ -13,6 +13,7 @@ from fireapp.views import (
     user_chapter_setup,
     set_generated_chapter,
     save_edited_chapters,
+    setup_chapter_answers,
 )
 
 from .modules.titles import (
@@ -35,15 +36,15 @@ def homepage(request):
     return render(request, "homepage.html")
 
 
-def dashboard(request):
-    if request.session.get("user_id"):
-        user_id = request.session.get("user_id")
-        data = get_user_personal_data(user_id)
-
-        data["table"] = get_user_dashboard_table(user_id)
-        data["names"] = SHORT_NAMES
-
-        return render(request, "dashboard.html", data)
+# def dashboard(request):
+#     if request.session.get("user_id"):
+#         user_id = request.session.get("user_id")
+#         data = get_user_personal_data(user_id)
+#
+#         data["table"] = get_user_dashboard_table(user_id)
+#         data["names"] = SHORT_NAMES
+#
+#         return render(request, "dashboard.html", data)
 
 
 def dashboard2(request):
@@ -62,6 +63,8 @@ def dashboard2(request):
                 data["names"][chapter].append(
                     [("sch" + str(i), "") for i in
                      range(1, len(SUBCHAPTER_LIST[CH_DICT(str(chapter))]))])
+
+        data["audio_file"] = "media/hello.wav"
 
         return render(request, "dashboard_v2.html", data)
 
@@ -334,11 +337,16 @@ def summary2(request):
         flag = ""
 
         questions = get_questionnaire(chapter)
+
         answers = get_user_answers(user_id, chapter)
+        if answers is None:
+            setup_chapter_answers(user_id, chapter)
+            answers = get_user_answers(user_id, chapter)
+
         idxs = [f"question{i}" for i in range(1, len(questions) + 1)]
 
         data = {"questions": questions, "answers": answers, "idxs": idxs, "flag": flag,
-                "chapter_name": TITLE_DICT[chapter], "chapter": chapter, "text": text}
+                "chapter_name": TITLE_DICT[chapter], "chapter": chapter}
 
         return render(
             request,
@@ -378,6 +386,21 @@ def download_book_pdf(request):
         response['Content-Disposition'] = "attachment; filename=%s" % filename
         print("RESPONSE: ", response)
         return response
+
+
+def get_question_audio(chapter, question):
+    filename = "hello.wav"
+    fl_path = "legacyapp/media/" + filename
+
+    fl = open(fl_path, 'rb')
+    mime_type, _ = mimetypes.guess_type(fl_path)
+    print("MIME_TYPE:", mime_type)
+    print("FILE:", fl)
+    response = HttpResponse(fl, content_type=mime_type)
+    response['Content-Disposition'] = "attachment; filename=%s" % filename
+    print("RESPONSE: ", response)
+    return response
+
 
 
 # ======================================= HELPER FUNCTIONS ======================================= #

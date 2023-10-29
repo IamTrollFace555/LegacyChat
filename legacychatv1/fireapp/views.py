@@ -123,8 +123,6 @@ def save_answers(request):
         response = request.POST
         chapter = response["chapter"]
 
-        print("DATA SAVED!")
-
         data = {}
 
         completed = True
@@ -143,7 +141,6 @@ def save_answers(request):
                 db.child("personal-data").child(ID).child("completed-chapters").child(CH_DICT(chapter)).set(True)
             else:
                 db.child("personal-data").child(ID).child("completed-chapters").child(CH_DICT(chapter)).set(False)
-
 
         try:
             if response["generate"] == "True":
@@ -315,10 +312,19 @@ def set_generated_chapter(user_id, chapter, text, params, gen_idx):
 
 
 def save_edited_chapters(user_id, chapter, gen1, gen2, gen3):
-
     db.child("user-book").child(user_id).child(CH_DICT(chapter)).child("gen1").update({"text": gen1})
     db.child("user-book").child(user_id).child(CH_DICT(chapter)).child("gen2").update({"text": gen2})
     db.child("user-book").child(user_id).child(CH_DICT(chapter)).child("gen3").update({"text": gen3})
+
+
+def setup_chapter_answers(user_id, chapter):
+    data = {}
+
+    for c in range(1, 7):
+        for i in range(1, 21):
+            data[f"question{i}"] = ""
+
+        db.child("user-answers").child(user_id).child(QUESTIONNAIRE_DICT[chapter]).update(data)
 
 
 # For testing purposes
