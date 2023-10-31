@@ -169,6 +169,22 @@ def save_text(request):
         return redirect("../../dashboard/")
 
 
+def save_preferences(request):
+    if request.method == "POST":
+        response = request.POST
+        data = {}
+        for i in range(1, 7):
+            data[f"ch{i}"] = response[f"ch{i}"]
+
+        if request.session.get("user_id"):
+            user_id = request.session.get("user_id")
+            db.child("personal-data").child(user_id).child("chosen-option").update(data)
+
+        print("DATA: ", data)
+
+        return redirect("../../dashboard/")
+
+
 # ==================================================================================================================== #
 # Helper functions
 # ==================================================================================================================== #

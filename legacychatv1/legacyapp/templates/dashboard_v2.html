@@ -27,6 +27,7 @@
   <h2>Continue where you left off:</h2>
   <hr>
 
+  <form method="POST" action="../generate-chapter/" id="chapter_options">{% csrf_token %}
   <table class="table">
     <thead>
       <tr>
@@ -35,6 +36,7 @@
         <th scope="col">Pictures</th>
         <th scope="col">Summary</th>
         <th scope="col">Chapter Draft</th>
+        <th scope="col">Chosen Chapter</th>
       </tr>
     </thead>
     <tbody>
@@ -75,16 +77,23 @@
                     <td><label style="text-decoration: underline; color: #007bff" for="ech{{forloop.counter0}}">{{table_ch.draft}}</label></td>
                 {% endif %}
 
+                <td>
+                    <div class="btn-group" role="group" aria-label="ch{{forloop.counter0}}" id="ch{{forloop.counter0}}">
+                        <input class="btn btn-primary" type="button" value="1">
+                        <input class="btn btn-primary" type="button" value="2">
+                        <input class="btn btn-primary" type="button" value="3">
+                    </div>
+                </td>
+
                 {% endif %}
             </tr>
             {% endwith %}
         {% endfor %}
     </tbody>
   </table>
-
-  <form action="download-book/" method="POST">{% csrf_token %}
-    <button type="submit" class="btn btn-primary">Download Summary</button>
   </form>
+  <br>
+  <button id="save_preferences" class="btn btn-primary">Save Preferences</button>
 
   <!--
   <audio controls>
@@ -93,14 +102,18 @@
   </audio>
   -->
 
+  <br><br>
   <p>Need to take a break? <a href="logout/">Log out</a></p>
   <!-- <p>Reminder: Only chapters 0, 1 and 2 have questionnaires. The creation of the other questionnaires is still in progress</p> -->
 
+    <br><hr><br>
 
+    <h3>Preview your book</h3>
+    <p>When you start generating your chapters you will see them in the document you can download with the button below:</p>
+    <form action="download-book/" method="POST">{% csrf_token %}
+    <button type="submit" class="btn btn-primary">Download Book</button>
+    </form>
 </div>
-
-
-
 <!-- Links for questions \!-->
     <form style="display: none" action="questionnaire/" method="POST">{% csrf_token %}
         <button type="submit" id="ch0" name="chapter" value = "0"> </button>
@@ -139,6 +152,76 @@
         <button type="submit" id="ech5" name="chapter" value = "5"> </button>
         <button type="submit" id="ech6" name="chapter" value = "6"> </button>
     </form>
+
+<script>
+// Function to save the user's selection in local storage
+function saveSelection(key, value) {
+    localStorage.setItem(key, value);
+}
+
+// Function to retrieve the user's selection from local storage
+function getSelection(key) {
+    return localStorage.getItem(key);
+}
+
+// Add event listeners to the input elements
+document.querySelectorAll('input[type="button"]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      // Get the value of the clicked button
+      var value = this.value;
+      // Get the ID of the parent accordion
+      var btn_groupId = this.closest('.btn-group').id;
+
+      // Deactivate all buttons in the same accordion
+      document.querySelectorAll('#' + btn_groupId + ' input[type="button"]').forEach(function (btn) {
+        btn.classList.remove('active');
+      });
+
+      // Set the clicked button as active
+      this.classList.add('active');
+
+      // Save the user's selection with a key that includes the accordion ID
+      saveSelection(btn_groupId, value);
+    });
+});
+function submitUserSelections() {
+  var formData = new FormData(); // Create a FormData object to store form data
+
+  // Loop through the accordion IDs
+  document.querySelectorAll('.btn-group').forEach(function (btn_group) {
+    var btn_groupId = btn_group.id;
+    var savedSelection = getSelection(btn_groupId);
+
+    // If a selection is found, add it to the FormData
+    if (savedSelection) {
+      formData.append(btn_groupId, savedSelection);
+    }
+  });
+
+  // Create a form element
+  var form = document.getElementById("chapter_options");
+  form.method = 'POST'; // Set the form method (POST or GET)
+  form.action = '../fireapp/save-preferences/'; // Set the server endpoint where you want to send the form data
+
+  // Append each FormData entry as a hidden input field in the form
+  formData.forEach(function (value, key) {
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = value;
+    form.appendChild(input);
+  });
+
+  // Append the form to the document body and submit it
+  document.body.appendChild(form);
+  form.submit();
+}
+
+// Add a click event listener to the trigger element (e.g., the "Submit" button)
+document.getElementById('save_preferences').addEventListener('click', function () {
+  submitUserSelections();
+});
+</script>
 
 </body>
 </html>

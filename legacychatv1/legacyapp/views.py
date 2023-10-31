@@ -446,7 +446,7 @@ def create_book_pdf(user_id):
     first_name = user_data["first_name"]
     last_name = user_data["last_name"]
 
-    gen = 1
+    gens = get_user_personal_data(user_id)["chosen-option"]
 
     pdf.add_page()
 
@@ -460,7 +460,7 @@ def create_book_pdf(user_id):
             pages = get_user_book_chapters(user_id, str(chapter))
 
         temp = {key: pages[key]["text"] for key in pages}
-        text = temp[f"gen{gen}"]
+        text = temp[f'gen{gens[f"ch{str(chapter)}"]}']
 
         pdf.set_font("Times", size=12)
         pdf.multi_cell(0, 10, txt=text, align='L')
