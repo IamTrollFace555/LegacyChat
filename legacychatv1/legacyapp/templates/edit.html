@@ -65,11 +65,11 @@
     </ul>
     <form method="POST" action="../generate-chapter/">{% csrf_token %}
         <label for="prompt" class="form-label">Edit your prompt below:</label>
-        <textarea class="form-control" id="prompt" name="prompt" rows="15">As a biography author, write  a chapter for my biography, based on the text below, use only the Answers, keep as much detail as possible, language level; high school, tone; familiar.&#10;&#10;&#10;{{text}}</textarea>
+        <textarea class="form-control" id="prompt" name="prompt" rows="15">You are a biography author, write a chapter for my biography based on the questions below. keep as much detail as possible and prefer longer paragraphs. Language level: Graduate. Tone: familiar.&#10;&#10;&#10;{{text}}</textarea>
         <br>
         <label for="temperature" class="form-label">Choose the temperature for the model</label>
-        <input type="range" class="form-range" min="0" max="2" step="0.1" id="temperature" name="temperature">
-        <p id="temp-display">Chosen temperature: 1 (Recommended)</p>
+        <input type="range" class="form-range" min="0" max="2" step="0.1" id="temperature" name="temperature" value="0.6">
+        <p id="temp-display">Chosen temperature: 0.6 (Recommended)</p>
 
         <input type="hidden" name="chapter" value="{{chapter}}">
 
