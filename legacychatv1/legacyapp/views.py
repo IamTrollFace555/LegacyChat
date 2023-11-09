@@ -1,4 +1,6 @@
 import mimetypes
+import datetime
+import pytz
 
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -10,10 +12,12 @@ from fireapp.views import (
     get_user_book_chapters,
     consume_chapter_token,
     get_user_dashboard_table,
-    user_chapter_setup,
+    # user_chapter_setup,
     set_generated_chapter,
-    save_edited_chapters,
+    save_edited_chapter,
     setup_chapter_answers,
+    add_token,
+    get_token_amount,
 )
 
 from .modules.titles import (
@@ -171,22 +175,10 @@ def chapter_edit(request):
     # Show the texts stored in the database
     pages = get_user_book_chapters(user_id, chapter)
     if pages is None:
-        user_chapter_setup(user_id)
-        pages = get_user_book_chapters(user_id, chapter)
-
-    # print("CHAPTER: ", chapter)
-    # print("PAGES: ", pages)
-
-    temp = {key: pages[key]["text"] for key in pages}
-
-    prevs = {}
-
-    for key, value in temp.items():
-        prevs[key] = value[: min(200, len(value))] + ("..." if len(value) > 200 else "")
-
-    flag = ""
-    if error:
-        flag = "You've reached the chapter generation limit!"
+        pages = {}
+    # if pages is None:
+    #     user_chapter_setup(user_id)
+    #     pages = get_user_book_chapters(user_id, chapter)
 
     try:
         del request.session['failed']
@@ -194,13 +186,13 @@ def chapter_edit(request):
     except KeyError:
         pass
 
-    text = create_summary(user_id, chapter)
+    default_prompt = create_summary(user_id, chapter)
 
     return render(
         request,
         "edit.html",
-        {"chapter": chapter, "chapter_name": TITLE_DICT[chapter], "pages": pages, "prevs": prevs, "flag": flag,
-         "text": text})
+        {"chapter": chapter, "chapter_name": TITLE_DICT[chapter], "pages": list(pages.items()),
+         "text": default_prompt})
 
     # except:
     #     print("EXCEPTION!")
@@ -253,23 +245,22 @@ def generate_chapter_testing(request):
         prompt = response["prompt"]
         temperature = response["temperature"]
 
-        pages = get_user_book_chapters(user_id, chapter)
-
         params = {"prompt": prompt, "temperature": temperature}
 
         new_gen = generate_chapter_testing_API(user_id, chapter, params)
+
+        # For keeping track of the amount of times a user has generated this chapter
+        gen_idx = add_token(user_id, chapter)
+        best = (gen_idx == 1)
         # new_gen = "Changed!"
 
-        texts = []
-        for dic in pages.values():
-            texts.append(dic["text"])
+        params = {"creativity": temperature,
+                  "prompt": prompt,
+                  "timestamp": get_timestamp(),
+                  "best": best,
+                  "draft_num": gen_idx,
+                  }
 
-        try:
-            gen_idx = texts.index("") + 1
-        except:
-            gen_idx = 1
-
-        params = {"creativity": temperature, "tone": "Not applicable", "level": "Not applicable"}
         set_generated_chapter(user_id, chapter, new_gen, params, gen_idx)
 
         request.session["chapter"] = chapter
@@ -277,18 +268,15 @@ def generate_chapter_testing(request):
 
 
 def save_answers(request):
-    print("SAVEDDDDDDDDDD")
     try:
         user_id = request.session.get("user_id")
         if request.method == "POST":
             response = request.POST
             chapter = response["chapter"]
+            gen = response["gen"]
+            edited_text = response["edited_text"]
 
-            gen1 = response["gen_text_1"]
-            gen2 = response["gen_text_2"]
-            gen3 = response["gen_text_3"]
-
-            save_edited_chapters(user_id, chapter, gen1, gen2, gen3)
+            save_edited_chapter(user_id, chapter, gen, edited_text)
 
             request.session["chapter"] = chapter
             return redirect("../chapter-edit/")
@@ -402,7 +390,6 @@ def get_question_audio(chapter, question):
     return response
 
 
-
 # ======================================= HELPER FUNCTIONS ======================================= #
 def create_summary(user_id, chapter, file=False):
     user_data = get_user_personal_data(user_id)
@@ -446,8 +433,6 @@ def create_book_pdf(user_id):
     first_name = user_data["first_name"]
     last_name = user_data["last_name"]
 
-    gens = get_user_personal_data(user_id)["chosen-option"]
-
     pdf.add_page()
 
     for chapter in range(1, 7):
@@ -455,12 +440,11 @@ def create_book_pdf(user_id):
         pdf.multi_cell(0, 10, txt=QUESTIONNAIRE_DICT[str(chapter)], align='L')
 
         pages = get_user_book_chapters(user_id, str(chapter))
-        if pages is None:
-            user_chapter_setup(user_id)
-            pages = get_user_book_chapters(user_id, str(chapter))
 
-        temp = {key: pages[key]["text"] for key in pages}
-        text = temp[f'gen{gens[f"ch{str(chapter)}"]}']
+        if pages is None:
+            text = "Generate a draft for this chapter first!"
+        else:
+            text = [pages[key]["text"] for key in pages if pages[key]["best"]][0]
 
         pdf.set_font("Times", size=12)
         pdf.multi_cell(0, 10, txt=text, align='L')
@@ -473,3 +457,14 @@ def create_book_pdf(user_id):
 
     print("PDF CREATED")
     return filename
+
+
+def get_timestamp():
+    # Create a timezone object for GMT-5 (UTC-5)
+    utc0 = pytz.timezone('Etc/GMT+0')
+
+    # Get the current time in the GMT-5 time zone
+    timestamp = datetime.datetime.now(utc0)
+
+    # return the current time in GMT-5
+    return str(timestamp)[:19]

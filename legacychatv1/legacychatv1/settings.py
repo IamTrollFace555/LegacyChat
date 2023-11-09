@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'user_manag_sys',
     'legacyapp',
     'bootstrap5',
+    'django_bootstrap_icons',
 ]
 
 MIDDLEWARE = [

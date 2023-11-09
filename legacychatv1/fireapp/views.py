@@ -68,13 +68,13 @@ def register(request):
                 "ch6": False,
             },
             "chapter-tokens": {
-                "profile": 3,
-                "ch1": 3,
-                "ch2": 3,
-                "ch3": 3,
-                "ch4": 3,
-                "ch5": 3,
-                "ch6": 3,
+                "profile": 0,
+                "ch1": 0,
+                "ch2": 0,
+                "ch3": 0,
+                "ch4": 0,
+                "ch5": 0,
+                "ch6": 0,
             },
             "chosen-option": {
                 "ch1": 1,
@@ -154,19 +154,20 @@ def save_answers(request):
         return redirect("../../dashboard/")
 
 
-def save_text(request):
+def save_draft(request):
     if request.method == "POST":
         response = request.POST
-        text = response["text"]
+        draft = response["draft"]
+        draft_num = response["draft_num"]
         chapter = response["chapter"]
 
-        data = {CH_DICT(chapter): text}
-        if request.session.get("user_id"):
-            ID = request.session.get("user_id")
+        data = {"text": draft}
+        user_id = request.session.get("user_id")
 
-            db.child("user-book").child(ID).update(data)
+        db.child("user-book").child(user_id).child(CH_DICT(chapter)).child(f"gen{draft_num}").update(data)
+        request.session['chapter'] = chapter
 
-        return redirect("../../dashboard/")
+        return redirect("../../dashboard/chapter-edit")
 
 
 def save_preferences(request):
@@ -183,6 +184,36 @@ def save_preferences(request):
         print("DATA: ", data)
 
         return redirect("../../dashboard/")
+
+
+def mark_as_best(request):
+    user_id = request.session.get("user_id")
+    if request.method == "POST":
+        response = request.POST
+        chapter = response["chapter"]
+        draft_num = response["draft_num"]
+
+        pages = get_user_book_chapters(user_id, chapter)
+
+        for key, info in pages.items():
+            db.child("user-book").child(user_id).child(CH_DICT(chapter)).child(key).update(
+                {"best": (key == f"gen{draft_num}")})
+            print("key: ", key)
+            print("draft: ", f"gen{draft_num}")
+
+    return redirect("../../dashboard/chapter-edit")
+
+
+def delete_draft(request):
+    user_id = request.session.get("user_id")
+    if request.method == "POST":
+        response = request.POST
+        chapter = response["chapter"]
+        draft_num = response["draft_num"]
+
+        db.child("user-book").child(user_id).child(CH_DICT(chapter)).child(f"gen{draft_num}").remove()
+
+    return redirect("../../dashboard/chapter-edit")
 
 
 # ==================================================================================================================== #
@@ -220,24 +251,24 @@ def get_user_book_chapters(user_id, chapter) -> dict or None:
         return None
 
 
-def user_chapter_setup(user_id) -> bool:
-    try:
-        NUM_CHAPTERS = 6
-        data = {}
-
-        for i in range(NUM_CHAPTERS + 1):
-            temp = {"gen1": {"text": "", "creativity": "", "tone": "", "level": "", },
-                    "gen2": {"text": "", "creativity": "", "tone": "", "level": "", },
-                    "gen3": {"text": "", "creativity": "", "tone": "", "level": "", },
-                    }
-
-            data[CH_DICT(str(i))] = temp
-
-        db.child("user-book").child(user_id).set(data)
-        return True
-
-    except warnings.warn("Chapter setup failed!"):
-        return False
+# def user_chapter_setup(user_id) -> bool:
+#     try:
+#         NUM_CHAPTERS = 6
+#         data = {}
+#
+#         for i in range(NUM_CHAPTERS + 1):
+#             temp = {"gen1": {"text": "", "creativity": "", "tone": "", "level": "", },
+#                     "gen2": {"text": "", "creativity": "", "tone": "", "level": "", },
+#                     "gen3": {"text": "", "creativity": "", "tone": "", "level": "", },
+#                     }
+#
+#             data[CH_DICT(str(i))] = temp
+#
+#         db.child("user-book").child(user_id).set(data)
+#         return True
+#
+#     except warnings.warn("Chapter setup failed!"):
+#         return False
 
 
 def consume_chapter_token(user_id, chapter):
@@ -320,17 +351,17 @@ def get_user_dashboard_table(user_id):
 def set_generated_chapter(user_id, chapter, text, params, gen_idx):
     data = {"text": text,
             "creativity": params["creativity"],
-            "tone": params["tone"],
-            "level": params["level"],
+            "prompt": params["prompt"],
+            "timestamp": params["timestamp"],
+            "best": params["best"],
+            "draft_num": params["draft_num"],
             }
 
     db.child("user-book").child(user_id).child(CH_DICT(chapter)).child(f"gen{gen_idx}").update(data)
 
 
-def save_edited_chapters(user_id, chapter, gen1, gen2, gen3):
-    db.child("user-book").child(user_id).child(CH_DICT(chapter)).child("gen1").update({"text": gen1})
-    db.child("user-book").child(user_id).child(CH_DICT(chapter)).child("gen2").update({"text": gen2})
-    db.child("user-book").child(user_id).child(CH_DICT(chapter)).child("gen3").update({"text": gen3})
+def save_edited_chapter(user_id, chapter, gen, text):
+    db.child("user-book").child(user_id).child(CH_DICT(chapter)).child(f"gen{gen}").update({"text": text})
 
 
 def setup_chapter_answers(user_id, chapter):
@@ -341,6 +372,20 @@ def setup_chapter_answers(user_id, chapter):
             data[f"question{i}"] = ""
 
         db.child("user-answers").child(user_id).child(QUESTIONNAIRE_DICT[chapter]).update(data)
+
+
+def add_token(user_id, chapter) -> int:
+    token_count = db.child("personal-data").child(user_id).child("chapter-tokens").child(
+        CH_DICT(chapter)).get().val()
+
+    db.child("personal-data").child(user_id).child("chapter-tokens").child(CH_DICT(chapter)).set(token_count + 1)
+
+    return token_count + 1
+
+
+def get_token_amount(user_id, chapter) -> None:
+    return db.child("personal-data").child(user_id).child("chapter-tokens").child(
+        CH_DICT(chapter)).get().val()
 
 
 # For testing purposes
