@@ -69,12 +69,16 @@
         -->
     </ul>
     <form method="POST" action="../generate-chapter/">{% csrf_token %}
-        <label for="prompt" class="form-label">Edit your prompt below:</label>
-        <textarea class="form-control" id="prompt" name="prompt" rows="15">You are a biography author, write one single chapter for my auto-biography using as information source the questions below. keep as much detail as possible and prefer longer paragraphs. Language level: Graduate. Tone: familiar.&#10;&#10;&#10;{{text}}</textarea>
         <br>
-        <label for="temperature" class="form-label">Choose the temperature for the model</label>
-        <input type="range" class="form-range" min="0" max="2" step="0.1" id="temperature" name="temperature" value="0.6">
-        <p id="temp-display">Chosen temperature: 0.6 (Recommended)</p>
+        <label for="prompt" class="form-label"><h6>Edit your prompt below:</h6></label>
+        <textarea style="font-family: 'Times New Roman', serif; border-style: inset; border-width: 2px;" class="form-control" id="prompt" name="prompt" rows="25">You are a biography author, write one single chapter for my auto-biography using as information source the questions below. keep as much detail as possible and prefer longer paragraphs. Language level: Graduate. Tone: familiar.&#10;&#10;&#10;{{text}}</textarea>
+        <br>
+
+        <div class="form-outline" style="width: 22rem;">
+            <label for="creativity" class="form-label">Choose the creativity for the model</label>
+            <input type="range" class="form-range" min="0" max="2" step="0.1" id="creativity" name="creativity" value="0.6">
+            <p id="temp-display">Chosen creativity: 0.6 (Recommended)</p>
+        </div>
 
         <input type="hidden" name="chapter" value="{{chapter}}">
 
@@ -97,7 +101,7 @@
         </h2>
         <div id="collapsecreativity" class="accordion-collapse collapse show" data-bs-parent="#creativity">
           <div class="accordion-body">
-            Increasing the creativity value generally enhances diversity in the output but could also raise the chances of it deviating from the context. On the other hand, reducing the temperature value results in AI responses that are more concentrated and predictable, closely aligned with the answers that the user provided.
+            Increasing the creativity value generally enhances diversity in the output but could also raise the chances of it deviating from the context. On the other hand, reducing the creativity value results in AI responses that are more concentrated and predictable, closely aligned with the answers that the user provided.
             <br><br>
                 <div class="row justify-content-left">
                   <div class="col-md-2">
@@ -212,292 +216,24 @@
 
     <hr>
 
-
-    <!-- ================================================= Cards ================================================= -->
-
-    <!--
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Draft 1</h5>
-
-                    {% if pages.gen1.text == "" %}
-                        <p class="card-text">There is nothing to show here yet. Try generating a chapter first!</p>
-                    {% else %}
-                        <p class="card-text">This text was generated using the following parameters:</p>
-                        <ul>
-                            <li>Creativity: {{pages.gen1.creativity}}</li>
-                            <li>Tone: {{pages.gen1.tone}}</li>
-                            <li>Writing Level: {{pages.gen1.level}}</li>
-
-                        </ul>
-
-                        <p class="d-inline-flex gap-1">
-                          <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft1" role="button" aria-expanded="false" aria-controls="draft1">
-                            Preview
-                          </a>
-                          <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom1" aria-controls="offcanvasBottom1">Edit</button>
-                        </p>
-                        <div class="collapse" id="draft1">
-                          <div class="card card-body">
-                            {{prevs.gen1}}
-                          </div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Draft 2</h5>
-                    {% if pages.gen2.text == "" %}
-                        <p class="card-text">There is nothing to show here yet. Try generating a chapter first!</p>
-                    {% else %}
-                        <p class="card-text">This text was generated using the following parameters:</p>
-                        <ul>
-                            <li>Creativity: {{pages.gen2.creativity}}</li>
-                            <li>Tone: {{pages.gen2.tone}}</li>
-                            <li>Writing Level: {{pages.gen2.level}}</li>
-
-                        </ul>
-
-                        <p class="d-inline-flex gap-1">
-                          <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft2" role="button" aria-expanded="false" aria-controls="draft2">
-                            Preview
-                          </a>
-                          <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom2" aria-controls="offcanvasBottom2">Edit</button>
-                        </p>
-                        <div class="collapse" id="draft2">
-                          <div class="card card-body">
-                            {{prevs.gen2}}
-                          </div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Draft 3</h5>
-                    {% if pages.gen3.text == "" %}
-                        <p class="card-text">There is nothing to show here yet. Try generating a chapter first!</p>
-                    {% else %}
-                        <p class="card-text">This text was generated using the following parameters:</p>
-                        <ul>
-                            <li>Creativity: {{pages.gen3.creativity}}</li>
-                            <li>Tone: {{pages.gen3.tone}}</li>
-                            <li>Writing Level: {{pages.gen3.level}}</li>
-
-                        </ul>
-
-                        <p class="d-inline-flex gap-1">
-                          <a class="btn btn-primary" data-bs-toggle="collapse" href="#draft3" role="button" aria-expanded="false" aria-controls="draft3">
-                            Preview
-                          </a>
-                          <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom3" aria-controls="offcanvasBottom3">Edit</button>
-                        </p>
-                        <div class="collapse" id="draft3">
-                          <div class="card card-body">
-                            {{prevs.gen3}}
-                          </div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <br><br>
-
-    -->
-
-    <!-- ============================================ Accordions ================================================= -->
-
-    <br>
-    <h3 class="simple" >Chapter Drafting</h3>
-    <br><br>
-
-    {% for gen_idx, page_info in pages %}
-        {% if page_info.best %}
-            <form action="../../fireapp/save-draft/" method="POST" name="save-texts{{page_info.draft_num}}" id="save-texts{{page_info.draft_num}}">{% csrf_token %}
-                <input type="hidden" name="chapter" value="{{chapter}}">
-                <input type="hidden" name="draft_num" value="{{page_info.draft_num}}">
-            </form>
-
-
-            <h5 class="simple" >Best Draft:</h5>
-            <br>
-
-            <div class="container">
-              <div class="row">
-                <div class="col-sm-10">
-
-                    <div class="accordion" id="accordionBest">
-                      <div class="accordion-item">
-                        <h2 class="accordion-header">
-                          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBest" aria-expanded="true" aria-controls="collapseBest">
-                            <h3 class="simple">Chapter {{chapter}}, Draft {{page_info.draft_num}}.&nbsp;&nbsp;&nbsp;Generated on {{page_info.timestamp}} UTC+0</h3>
-                          </button>
-                        </h2>
-                        <div id="collapseBest" class="accordion-collapse collapse show" data-bs-parent="#accordionBest">
-                          <div class="accordion-body">
-
-                            <h5>Creativity used: {{page_info.creativity}}</h5>
-                            <hr>
-
-                            <textarea class="form-control" id="draft{{page_info.draft_num}}" name="draft" rows="15" form="save-texts{{page_info.draft_num}}">{{page_info.text}}</textarea>
-
-                            <hr>
-                            <button style="width: 20%;" type="submit" class="btn btn-primary text-" id="saveText{page_info.draft_num}" form="save-texts{{page_info.draft_num}}">Save Changes</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                </div>
-                <div class="col-sm-1">
-                  <div class="row">
-                    <button type="button" class="btn btn-primary" style="width: 40%; height: 90%;margin-left: 10%">{% bs_icon 'check-circle-fill' %}</button>
-                  </div>
-
-                  <div class="row">
-                  </div>
-
-                </div>
-
-                <div class="col-sm-1">
-                  <div class="row">
-                    <button type="button" class="btn btn-info" style="border:0 solid black; background-color: transparent; width: 40%; height: 80%" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="This draft is currently selected as best, which means this is the draft that will be used for your book" data-bs-title="Best Chapter">{% bs_icon 'question-circle' %}</button>
-                  </div>
-
-                  <div class="row">
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-
-        {% endif %}
-    {% endfor %}
-
-    <br><br>
-    <h5 class="simple" >Drafts:</h5>
-    <br>
-
-    {% for gen_idx, page_info in pages %}
-        {% if not page_info.best %}
-
-            <form action="../../fireapp/save-draft/" method="POST" name="save-texts{{page_info.draft_num}}" id="save-texts{{page_info.draft_num}}">{% csrf_token %}
-                <input type="hidden" name="chapter" value="{{chapter}}">
-                <input type="hidden" name="draft_num" value="{{page_info.draft_num}}">
-            </form>
-
-            <div class="container">
-              <div class="row">
-                <div class="col-sm-10">
-
-                    <div class="accordion" id="accordion{{page_info.draft_num}}">
-                      <div class="accordion-item">
-                        <h2 class="accordion-header">
-                          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{page_info.draft_num}}" aria-expanded="true" aria-controls="collapse{{page_info.draft_num}}">
-                            <h3 class="simple">Chapter {{chapter}}, Draft {{page_info.draft_num}}.&nbsp;&nbsp;&nbsp;Generated on {{page_info.timestamp}} UTC+0</h3>
-                          </button>
-                        </h2>
-                        <div id="collapse{{page_info.draft_num}}" class="accordion-collapse collapse show" data-bs-parent="#accordion{{page_info.draft_num}}">
-                          <div class="accordion-body">
-
-                            <h5>Creativity used: {{page_info.creativity}}</h5>
-                            <hr>
-
-                            <textarea class="form-control" id="draft{{page_info.draft_num}}" name="draft" rows="15" form="save-texts{{page_info.draft_num}}">{{page_info.text}}</textarea>
-
-                            <hr>
-                            <button style="width: 20%;" type="submit" class="btn btn-primary text-" id="saveText{page_info.draft_num}" form="save-texts{{page_info.draft_num}}">Save Changes</button>
-
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                </div>
-                <div class="col-sm-1">
-                  <div class="row">
-                    <form action="../../fireapp/mark-as-best/" method="POST" type="hidden">{% csrf_token %}
-                        <input type="hidden" name="chapter" value="{{chapter}}">
-                        <input type="hidden" name="draft_num" value="{{page_info.draft_num}}">
-                        <button class="btn btn-primary" style="width: 50%; height: 100%;">{% bs_icon 'check-circle' %}</button>
-                    </form>
-
-                  </div>
-
-                  <div class="row">
-                    <button type="button" class="btn btn-danger" style="width: 40%; height: 90%; margin-top: 3%; margin-left: 10%" data-bs-toggle="modal" data-bs-target="#Modal{{page_info.draft_num}}">{% bs_icon 'trash' %}</button>
-                  </div>
-
-                </div>
-
-                <div class="col-sm-1">
-                  <div class="row">
-                    <button type="button" class="btn btn-info" style="border:0 solid black; background-color: transparent; width: 40%; height: 80%" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Make this draft the one that will be used for your book" data-bs-title="Mark as Best">{% bs_icon 'question-circle' %}</button>
-                  </div>
-
-                  <div class="row">
-                    <button type="button" class="btn btn-info" style="border:0 solid black; background-color: transparent; width: 40%; height: 80%; margin-top: 3%" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Did not like this draft? Delete it." data-bs-title="Delete Draft">{% bs_icon 'question-circle' %}</button>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-
-            <!-- Modal -->
-            <div class="modal fade" id="Modal{{page_info.draft_num}}" tabindex="-1" aria-labelledby="Modal{{page_info.draft_num}}Label" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="Modal{{page_info.draft_num}}Label">Delete Draft?</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    Once you delete a draft, it is <strong>impossible</strong> to recover it.
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-                    <form action="../../fireapp/delete-draft/" method="POST" type="hidden">{% csrf_token %}
-                        <input type="hidden" name="chapter" value="{{chapter}}">
-                        <input type="hidden" name="draft_num" value="{{page_info.draft_num}}">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <br><br>
-        {% endif %}
-    {% endfor %}
-
     <br><br>
 
     <div class="container">
         <div class="row justify-content-md-center">
-            <a href="../" class="btn btn-primary" style="width: 30%">Return to Dashboard</a>
+            <div class="col">
+                <a href="../" class="btn btn-primary" style="width: 30%">Return to Dashboard</a>
+            </div>
+            <div class="col">
+                <form action="../book-drafting/" method="POST">{% csrf_token %}
+                  <input type="hidden" name="chapter" value="{{chapter}}">
+                  <button type="submit" class="btn btn-primary">Go to Book Drafting</button>
+                </form>
+            </div>
         </div>
 
     </div>
 
     <br><br>
-
-
-
 
 </div>
 
@@ -712,9 +448,14 @@ function submitUserSelections() {
     }
 
   // Add a click event listener to the trigger element (e.g., the "Submit" button)
-  const temp = document.getElementById('temperature');
+  const temp = document.getElementById('creativity');
   temp.addEventListener('click', function () {
-    document.getElementById("temp-display").innerHTML = "Chosen temperature: " + temp.value
+      if (temp.value == 0.6) {
+          document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + " (Recommended)"
+      }
+      else {
+          document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + "  (Recommended: 0.6)"
+      }
     console.log(temp.value)
   });
 
@@ -723,8 +464,19 @@ function submitUserSelections() {
     return new bootstrap.Popover(popoverTriggerEl)
   })
 
+
+  function openTab() {
+    var tab = window.open('Generated Chapter', '_blank');
+    tab.document.write("{{generated_text|safe}}"); // where 'html' is a variable containing your HTML
+    tab.document.close(); // to finish loading the page
+    }
 </script>
 
+{% if generated %}
+<script>
+    openTab();
+</script>
+{% endif %}
 
 </body>
 </html>

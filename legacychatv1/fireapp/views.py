@@ -167,7 +167,7 @@ def save_draft(request):
         db.child("user-book").child(user_id).child(CH_DICT(chapter)).child(f"gen{draft_num}").update(data)
         request.session['chapter'] = chapter
 
-        return redirect("../../dashboard/chapter-edit")
+        return redirect("../../dashboard/book-drafting")
 
 
 def save_preferences(request):
@@ -194,14 +194,13 @@ def mark_as_best(request):
         draft_num = response["draft_num"]
 
         pages = get_user_book_chapters(user_id, chapter)
+        request.session['chapter'] = chapter
 
         for key, info in pages.items():
             db.child("user-book").child(user_id).child(CH_DICT(chapter)).child(key).update(
                 {"best": (key == f"gen{draft_num}")})
-            print("key: ", key)
-            print("draft: ", f"gen{draft_num}")
 
-    return redirect("../../dashboard/chapter-edit")
+    return redirect("../../dashboard/book-drafting")
 
 
 def delete_draft(request):
@@ -210,10 +209,11 @@ def delete_draft(request):
         response = request.POST
         chapter = response["chapter"]
         draft_num = response["draft_num"]
+        request.session['chapter'] = chapter
 
         db.child("user-book").child(user_id).child(CH_DICT(chapter)).child(f"gen{draft_num}").remove()
 
-    return redirect("../../dashboard/chapter-edit")
+    return redirect("../../dashboard/book-drafting")
 
 
 # ==================================================================================================================== #

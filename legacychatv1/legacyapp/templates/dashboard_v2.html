@@ -34,7 +34,8 @@
         <th scope="col">Questions</th>
         <th scope="col">Pictures</th>
         <th scope="col">Summary</th>
-        <th scope="col">Chapter Draft</th>
+        <th scope="col">Chapter Generation</th>
+        <th scope="col">Book Drafting</th>
         <!-- <th scope="col">Chosen Chapter</th> -->
       </tr>
     </thead>
@@ -75,6 +76,7 @@
                 {% else %}
                     <td><label style="text-decoration: underline; color: #007bff" for="ech{{forloop.counter0}}">{{table_ch.draft}}</label></td>
                 {% endif %}
+                <td><label style="text-decoration: underline; color: #007bff" for="bdch{{forloop.counter0}}">Go</label></td>
 
                 <!--
                 <td>
@@ -106,6 +108,12 @@
   -->
 
 
+  <form action="book-drafting/" method="POST">{% csrf_token %}
+    <input type="hidden" name="chapter" value="1">
+    <button type="submit" class="btn btn-primary">Build and customize your book</button>
+  </form>
+
+  <br><br>
   <p>Need to take a break? <a href="logout/">Log out</a></p>
   <!-- <p>Reminder: Only chapters 0, 1 and 2 have questionnaires. The creation of the other questionnaires is still in progress</p> -->
 
@@ -158,6 +166,17 @@
         <button type="submit" id="ech4" name="chapter" value = "4"> </button>
         <button type="submit" id="ech5" name="chapter" value = "5"> </button>
         <button type="submit" id="ech6" name="chapter" value = "6"> </button>
+    </form>
+
+    <!-- Links for chapter edit \!-->
+    <form style="display: none" action="book-drafting/" method="POST">{% csrf_token %}
+        <button type="submit" id="bdch0" name="chapter" value = "0"> </button>
+        <button type="submit" id="bdch1" name="chapter" value = "1"> </button>
+        <button type="submit" id="bdch2" name="chapter" value = "2"> </button>
+        <button type="submit" id="bdch3" name="chapter" value = "3"> </button>
+        <button type="submit" id="bdch4" name="chapter" value = "4"> </button>
+        <button type="submit" id="bdch5" name="chapter" value = "5"> </button>
+        <button type="submit" id="bdch6" name="chapter" value = "6"> </button>
     </form>
 
 <script>

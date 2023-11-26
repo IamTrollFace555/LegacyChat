@@ -13,4 +13,6 @@ urlpatterns = [
     path("dashboard/generate-chapter/", views.generate_chapter_testing, name="generate-chapter"),
     path("dashboard/save-answers/", views.save_answers, name="save-answers"),
     path("dashboard/download-book/", views.download_book_pdf, name="download-book"),
+    path("dashboard/book-drafting/", views.book_drafting, name="book-drafting"),
+
 ]

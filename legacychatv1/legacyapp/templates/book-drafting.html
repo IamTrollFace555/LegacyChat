@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:class="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Book-drafting</title>
+      {% load bootstrap5 %}
+      {% bootstrap_css %}
+      {% bootstrap_javascript %}
+      {% load static %}
+      {% load custom_filters %}
+      {% load bootstrap_icons %}
+    
+</head>
+
+<!-- ============================================ Navigation Bar ============================================ -->
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="width: 100%">
+        <div class="container-fluid"> <!-- Add container-fluid -->
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'logo2.png' %}" alt="Logo" width="199" height="50">
+            </a>
+        </div>
+    </nav>
+</div>
+
+<!-- ============================================ Navigation Bar ============================================ -->
+
+
+<div class="container mt-5" id="page">
+
+    <!-- ============================================ Accordions ================================================= -->
+    <br>
+    <h3 class="simple" >Book Drafting</h3>
+    <br><br>
+
+    <hr>
+
+    {% if prev_chapters|length > 0 %}
+    <h4>Previous Chapters:</h4>
+    <br>
+    {% endif %}
+
+
+    {% for chapter, idx in prev_chapters %}
+    <form action="../book-drafting/" method="POST">{% csrf_token %}
+      <input type="hidden" name="chapter" value="{{idx}}">
+      <button type="submit" class="btn btn-secondary">{{chapter}}</button>
+    </form>
+
+    <br><br>
+    {% endfor %}
+
+
+    <h4>Current chapter:</h4> {{chapter_name|safe}}
+
+    <br><br>
+    {% for gen_idx, page_info in pages %}
+        {% if page_info.best %}
+            <form action="../../fireapp/save-draft/" method="POST" name="save-texts{{page_info.draft_num}}" id="save-texts{{page_info.draft_num}}">{% csrf_token %}
+                <input type="hidden" name="chapter" value="{{chapter}}">
+                <input type="hidden" name="draft_num" value="{{page_info.draft_num}}">
+            </form>
+
+
+            <h5 class="simple" >Best Draft:</h5>
+            <br>
+
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-10">
+
+                    <div class="accordion" id="accordionBest">
+                      <div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBest" aria-expanded="true" aria-controls="collapseBest">
+                            <h3 class="simple">Chapter {{chapter}}, Draft {{page_info.draft_num}}.&nbsp;&nbsp;&nbsp;Generated on {{page_info.timestamp}} UTC+0</h3>
+                          </button>
+                        </h2>
+                        <div id="collapseBest" class="accordion-collapse collapse show" data-bs-parent="#accordionBest">
+                          <div class="accordion-body">
+
+                            <h5>Creativity used: {{page_info.creativity}}</h5>
+                            <hr>
+
+                            <textarea class="form-control" id="draft{{page_info.draft_num}}" name="draft" rows="15" form="save-texts{{page_info.draft_num}}">{{page_info.text}}</textarea>
+
+                            <hr>
+                            <button style="width: 20%;" type="submit" class="btn btn-primary text-" id="saveText{page_info.draft_num}" form="save-texts{{page_info.draft_num}}">Save Changes</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-1">
+                  <div class="row">
+                    <button type="button" class="btn btn-primary" style="width: 40%; height: 90%;margin-left: 10%">{% bs_icon 'check-circle-fill' %}</button>
+                  </div>
+
+                  <div class="row">
+                  </div>
+
+                </div>
+
+                <div class="col-sm-1">
+                  <div class="row">
+                    <button type="button" class="btn btn-info" style="border:0 solid black; background-color: transparent; width: 40%; height: 80%" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="This draft is currently selected as best, which means this is the draft that will be used for your book" data-bs-title="Best Chapter">{% bs_icon 'question-circle' %}</button>
+                  </div>
+
+                  <div class="row">
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+        {% endif %}
+    {% endfor %}
+
+    <br><br>
+    <h5 class="simple" >Drafts:</h5>
+    <br>
+
+    {% for gen_idx, page_info in pages %}
+        {% if not page_info.best %}
+
+            <form action="../../fireapp/save-draft/" method="POST" name="save-texts{{page_info.draft_num}}" id="save-texts{{page_info.draft_num}}">{% csrf_token %}
+                <input type="hidden" name="chapter" value="{{chapter}}">
+                <input type="hidden" name="draft_num" value="{{page_info.draft_num}}">
+            </form>
+
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-10">
+
+                    <div class="accordion" id="accordion{{page_info.draft_num}}">
+                      <div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{page_info.draft_num}}" aria-expanded="true" aria-controls="collapse{{page_info.draft_num}}">
+                            <h3 class="simple">Chapter {{chapter}}, Draft {{page_info.draft_num}}.&nbsp;&nbsp;&nbsp;Generated on {{page_info.timestamp}} UTC+0</h3>
+                          </button>
+                        </h2>
+                        <div id="collapse{{page_info.draft_num}}" class="accordion-collapse collapse show" data-bs-parent="#accordion{{page_info.draft_num}}">
+                          <div class="accordion-body">
+
+                            <h5>Creativity used: {{page_info.creativity}}</h5>
+                            <hr>
+
+                            <textarea class="form-control" id="draft{{page_info.draft_num}}" name="draft" rows="15" form="save-texts{{page_info.draft_num}}">{{page_info.text}}</textarea>
+
+                            <hr>
+                            <button style="width: 20%;" type="submit" class="btn btn-primary text-" id="saveText{page_info.draft_num}" form="save-texts{{page_info.draft_num}}">Save Changes</button>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-1">
+                  <div class="row">
+                    <form action="../../fireapp/mark-as-best/" method="POST" type="hidden">{% csrf_token %}
+                        <input type="hidden" name="chapter" value="{{chapter}}">
+                        <input type="hidden" name="draft_num" value="{{page_info.draft_num}}">
+                        <button class="btn btn-primary" style="width: 50%; height: 100%;">{% bs_icon 'check-circle' %}</button>
+                    </form>
+
+                  </div>
+
+                  <div class="row">
+                    <button type="button" class="btn btn-danger" style="width: 40%; height: 90%; margin-top: 3%; margin-left: 10%" data-bs-toggle="modal" data-bs-target="#Modal{{page_info.draft_num}}">{% bs_icon 'trash' %}</button>
+                  </div>
+
+                </div>
+
+                <div class="col-sm-1">
+                  <div class="row">
+                    <button type="button" class="btn btn-info" style="border:0 solid black; background-color: transparent; width: 40%; height: 80%" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Make this draft the one that will be used for your book" data-bs-title="Mark as Best">{% bs_icon 'question-circle' %}</button>
+                  </div>
+
+                  <div class="row">
+                    <button type="button" class="btn btn-info" style="border:0 solid black; background-color: transparent; width: 40%; height: 80%; margin-top: 3%" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Did not like this draft? Delete it." data-bs-title="Delete Draft">{% bs_icon 'question-circle' %}</button>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="Modal{{page_info.draft_num}}" tabindex="-1" aria-labelledby="Modal{{page_info.draft_num}}Label" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="Modal{{page_info.draft_num}}Label">Delete Draft?</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Once you delete a draft, it is <strong>impossible</strong> to recover it.
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                    <form action="../../fireapp/delete-draft/" method="POST" type="hidden">{% csrf_token %}
+                        <input type="hidden" name="chapter" value="{{chapter}}">
+                        <input type="hidden" name="draft_num" value="{{page_info.draft_num}}">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <br><br>
+        {% endif %}
+    {% endfor %}
+
+    <hr>
+
+    {% if next_chapters|length > 0 %}
+    <h4>Next Chapters:</h4>
+    <br>
+    {% endif %}
+
+    {% for chapter, idx in next_chapters %}
+    <form action="../book-drafting/" method="POST">{% csrf_token %}
+      <input type="hidden" name="chapter" value="{{idx}}">
+      <button type="submit" class="btn btn-secondary">{{chapter}}</button>
+    </form>
+
+    <br><br>
+    {% endfor %}
+    <br><br>
+
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col">
+                <a href="../" class="btn btn-primary" style="width: 30%">Return to Dashboard</a>
+            </div>
+
+            <div class="col">
+                <form action="../summary/" method="POST">{% csrf_token %}
+                  <input type="hidden" name="chapter" value="{{chapter}}">
+                  <button type="submit" class="btn btn-primary">Go to Summary</button>
+                </form>
+            </div>
+
+            <div class="col">
+                <form action="../chapter-edit/" method="POST">{% csrf_token %}
+                  <input type="hidden" name="chapter" value="{{chapter}}">
+                  <button type="submit" class="btn btn-primary">Go to Chapter Generation</button>
+                </form>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <br><br>
+
+</div>
+
+
+<body>
+
+</body>
+</html>
