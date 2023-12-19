@@ -462,7 +462,7 @@ function submitUserSelections() {
   // Add a click event listener to the trigger element (e.g., the "Submit" button)
   const temp = document.getElementById('creativity');
   temp.addEventListener('change', function () {
-      if (temp.value == 0.6) {
+      if (temp.value === 0.6) {
           document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + " (Recommended)"
       }
       else {
@@ -471,7 +471,7 @@ function submitUserSelections() {
   });
 
   temp.addEventListener('touchstart', function () {
-      if (temp.value == 0.6) {
+      if (temp.value === 0.6) {
           document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + " (Recommended)"
       }
       else {
@@ -490,6 +490,17 @@ function submitUserSelections() {
     tab.document.write("{{generated_text|safe}}"); // where 'html' is a variable containing your HTML
     tab.document.close(); // to finish loading the page
     }
+
+    window.document.body.addEventListener("touchstart",
+        function () {
+          if (temp.value === 0.6) {
+              document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + " (Recommended)"
+          }
+          else {
+              document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + "  (Recommended: 0.6)"
+          }
+        },
+        false);
 </script>
 
 {% if generated %}
