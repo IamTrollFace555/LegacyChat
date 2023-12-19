@@ -32,8 +32,6 @@ from .modules.titles import (
 
 from fpdf import FPDF
 
-from random import random
-
 
 # Create your views here.
 def homepage(request):
@@ -207,7 +205,8 @@ def chapter_edit(request):
          "text": default_prompt,
          "generated": generated,
          "generated_text": create_book_html(user_id, chapter),
-        })
+         })
+
 
 def book_drafting(request):
     # try:
@@ -243,7 +242,8 @@ def book_drafting(request):
 
     prev_chapters = [*zip(chapter_names[:temp_idx], [*range(1, int(chapter))])]
     next_chapters = [*zip(chapter_names[temp_idx + 1:] if temp_idx != len(chapter_names) - 1 else [],
-                          [*range(int(chapter) + 1, len(chapter_names) + 1)] if temp_idx != len(chapter_names) - 1 else [])]
+                          [*range(int(chapter) + 1, len(chapter_names) + 1)] if temp_idx != len(
+                              chapter_names) - 1 else [])]
     print(chapter_names)
     print(temp_idx)
     print("prev: ", prev_chapters)
@@ -523,7 +523,6 @@ def create_book_pdf(user_id):
 
 
 def create_book_html(user_id, chapter):
-
     user_data = get_user_personal_data(user_id)
     first_name = user_data["first_name"]
     last_name = user_data["last_name"]

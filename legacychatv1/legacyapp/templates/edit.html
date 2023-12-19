@@ -70,14 +70,26 @@
     </ul>
     <form method="POST" action="../generate-chapter/">{% csrf_token %}
         <br>
+
+        <h6>INPUT TO BE PASSED TO THE AI:</h6>
+
         <label for="prompt" class="form-label"><h6>Edit your prompt below:</h6></label>
         <textarea style="font-family: 'Times New Roman', serif; border-style: inset; border-width: 2px;" class="form-control" id="prompt" name="prompt" rows="25">You are a biography author, write one single chapter for my auto-biography using as information source the questions below. keep as much detail as possible and prefer longer paragraphs. Language level: Graduate. Tone: familiar.&#10;&#10;&#10;{{text}}</textarea>
         <br>
 
+        <hr>
+        <h5>Creativity</h5>
+
+        <p>The creativity or <strong>temperature</strong> of the model controls how imaginative the model's response is: A low creativity score means the AI will only answer based on what it is given, it will not try to infer things from context or say anything differet from what the prompt asked for. On the other hand, if the creativity score is high, the AI will try to infer things and sometimes make up stuff to complement it's answer. It is also more likely to make jokes and use more informal language, but too much creativity and the AI will start writing nonsense or things too far from what it was asked to do. </p>
+
         <div class="form-outline" style="width: 22rem;">
-            <label for="creativity" class="form-label">Choose the creativity for the model</label>
+            <label for="creativity" class="form-label">Choose the creativity for the model.</label>
+            <p>Min: 0.0, Max: 2.0</p>
             <input type="range" class="form-range" min="0" max="2" step="0.1" id="creativity" name="creativity" value="0.6">
-            <p id="temp-display">Chosen creativity: 0.6 (Recommended)</p>
+
+            <br><br><br>
+
+            <h5 id="temp-display">Chosen creativity: 0.6 (Recommended)</h5>
         </div>
 
         <input type="hidden" name="chapter" value="{{chapter}}">
@@ -449,7 +461,14 @@ function submitUserSelections() {
 
   // Add a click event listener to the trigger element (e.g., the "Submit" button)
   const temp = document.getElementById('creativity');
-  temp.addEventListener('click', function () {
+  temp.addEventListener('change', function () {
+      if (temp.value == 0.6) {
+          document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + " (Recommended)"
+      }
+      else {
+          document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + "  (Recommended: 0.6)"
+      }
+  temp.addEventListener('touchend', function () {
       if (temp.value == 0.6) {
           document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + " (Recommended)"
       }

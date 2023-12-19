@@ -4,110 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legacy Chat</title>
-    <style>
-        body {font-size: x-large}
 
-        /* Reset some default styles to provide a consistent baseline */
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background-color: #f5f5f5;
-        }
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% load static %}
+    {% load custom_filters %}
 
-        /* Center the content on the page */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 30px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Style headings */
-        h1, h2, h3 {
-            color: #333;
-        }
-
-        /* Style links */
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* Add spacing between elements */
-        p, ul, ol {
-            margin-bottom: 15px;
-        }
-
-        /* Style images */
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        /* Style textareas */
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: vertical; /* Allow vertical resizing */
-            font-family: "Times New Roman", Times, serif; /* Set a specific font */
-        }
-    </style>
 </head>
 <body>
-<div class="container">
 
-    <h1>Legacy Chat</h1>
+<!-- ============================================ Navigation Bar ============================================ -->
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="width: 100%">
+        <div class="container-fluid"> <!-- Add container-fluid -->
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'logo2.png' %}" alt="Logo" width="199" height="50">
+            </a>
+        </div>
+    </nav>
+</div>
 
-    <h2>Preserving Family Wisdom</h2>
-    <p>
-        Thank you for choosing Legacy as your tool for writing your memoirs.
-        Our primary objective is to assist you in creating a draft by offering ideas,
-        suggestions, and jogging your memory regarding events, personalities,
-        and other details that may have slipped into the recesses of your mind over time.
-        To facilitate this process, we have developed a comprehensive questionnaire that will
-        help organize and activate your memories.
+
+<div class="container mt-5">
+    <h1 class="fs-1">Legacy Chat</h1>
+    <br>
+    <h2 class="fs-2">Preserving Family Wisdom</h2>
+
+    <br>
+    <hr>
+    <p class="fs-4">
+
+    Dear User,
+    We are thrilled to extend this invitation to you to join our beta testing program for our latest software, 'Legacy Chat'. Your willingness to volunteer your time and provide valuable feedback is greatly appreciated by our entire team.
+    As a beta tester, your insights are crucial in shaping the final version of our product. Here are the key steps and things to observe during the testing phase:
     </p>
-    <p>
-        We recommend that you begin by reviewing the Questionnaire and gaining a general
-        understanding of the history you wish to recount,
-        including its elements and the desired sequence of presentation.
-        Naturally, this initial plan can be refined as you remember or uncover additional items
-        for your memoir. The Questionnaire screen can be accessed from any page
-        by pressing the "Questionnaire" button, and you can return to the original screen
-        by selecting "Back."
-    </p>
-    <p>
-        Once you have drafted the first section of your document,
-        such as the opening chapter, please press the "Edit" button.
-        Our application will then pass it through an Artificial Intelligence System
-         that will refine the organization and wording of your draft. The
-         polished version will be displayed beneath the draft you entered.
 
-    </p>
-    <p>
-        At this stage, we recommend carefully reviewing both the pre-final document and the draft,
-         making any necessary changes. Once you are satisfied with the pre-final draft,
-          pressing the "Final" button will solidify it as the final version and move it
-           to the file where the complete document is being assembled.
+    <ol class="fs-4">
+    <li>  Account Creation: Please follow the instructions to create an account and log in into the page. Note any difficulties or unexpected issues during this process.
+    <br>
+    <br>
+    <li>  Usability Testing: Engage with the software as you would in your daily routine. Pay attention to its ease of use, navigation, and overall user experience.
+    <br>
+    <br>
+    <li>  Feature Evaluation: Test each feature thoroughly. We are particularly interested in your thoughts on the <strong>Chapter Generation</strong> and <strong>Book Drafting</strong>.
+    <br>
+    <br>
+    <li>  Performance Monitoring: Observe how the software performs under different conditions, such as under heavy load or when running in the background.
+    <br>
+    <br>
+    <li>  Error Reporting: Should you encounter any bugs or glitches, please contact us tool to report these issues. Include as much detail as possible.
+    <br>
+    <br>
+    <li>  Feedback Submission: At the end of each testing week, please message us with your feedback. Your honest opinions, both positive and negative, are invaluable. You may contact the e-mail <strong>jn.sepulveda55@gmail.com</strong> or any other that was provided to you
+    <br>
+    <br>
+    <li>  Confidentiality: As this is a beta version, please maintain confidentiality regarding the software’s features and performance.
+    </ol>
 
-    </p>
-    <p>
-        We are delighted to embark on this journey of preserving your personal history
-         through the art of memoir writing. Should you have any questions or
-         require further assistance, please don't hesitate to reach out. Happy writing!
-    </p><br>
+    <br>
+    <p class="fs-4">
+    Your feedback will directly contribute to the improvement and success of our software. We are excited to have you on board and look forward to your valuable contributions.
 
-    <p>The first step is to create an account! <a href="../users/register">Register here</a></p>
-    <p>Already have an account?  <a href="../users/login">Login here</a></p><br><br>
+    Thank you once again for your commitment and support.
+
+    Warm regards,
+
+    The Legacy Chat Team.
+    </p>
+
+    <hr>
+    <br>
+    <h3>Creating an account: </h3>
+    <br>
+    <p class="fs-4">To create an account, please use the following link to the registration page <a href="../users/register">here</a>. In this page you will be asked to provide your firstname, lastname and e-mail.</p>
+    <p class="fs-4">You will also be asked to create a password for your account. If you ever forget your password, there will be an option to recover your password via e-mail.</p>
+    <br>
+    <p class="fs-4">If you already registered, please log into your account <a href="../users/login">here</a></p><br><br>
 
 </div>
 </body>
