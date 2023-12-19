@@ -468,14 +468,15 @@ function submitUserSelections() {
       else {
           document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + "  (Recommended: 0.6)"
       }
-  temp.addEventListener('touchend', function () {
+  });
+
+  temp.addEventListener('touchstart', function () {
       if (temp.value == 0.6) {
           document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + " (Recommended)"
       }
       else {
           document.getElementById("temp-display").innerHTML = "Chosen creativity: " + temp.value + "  (Recommended: 0.6)"
       }
-    console.log(temp.value)
   });
 
   var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
