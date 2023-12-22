@@ -327,7 +327,7 @@ def generate_chapter_testing(request):
 
         request.session["chapter"] = chapter
         request.session["generated"] = True
-        return redirect("../chapter-edit/")
+        return redirect("../book-drafting/")
 
 
 def save_answers(request):
@@ -509,9 +509,11 @@ def create_book_pdf(user_id):
             text = "Generate a draft for this chapter first!"
         else:
             text = [pages[key]["text"] for key in pages if pages[key]["best"]][0]
+            text = text.encode('latin-1', 'replace').decode('latin-1')
 
         pdf.set_font("Times", size=12)
         pdf.multi_cell(0, 10, txt=text, align='L')
+        print("TEXT: ", text)
 
     # save the pdf with name .pdf
     path = "legacyapp/static/"
