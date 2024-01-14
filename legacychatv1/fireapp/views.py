@@ -19,14 +19,14 @@ CH_DICT = lambda x: "ch" + x if x != "0" else "profile"
 # Views
 # ==================================================================================================================== #
 config = {
-    "apiKey": "AIzaSyDgRHq65LSjzQGEmntMQLFlXgMywblMALs",
-    "authDomain": "legacychat-v1.firebaseapp.com",
-    "databaseURL": "https://legacychat-v1-default-rtdb.firebaseio.com",
-    "projectId": "legacychat-v1",
-    "storageBucket": "legacychat-v1.appspot.com",
-    "messagingSenderId": "833857418223",
-    "appId": "1:833857418223:web:a72ca0275cd9263c967c1a"
-}
+  apiKey: "AIzaSyARWU7n1tQjbHWpImgk1ymmfUhe3jrVZj8",
+  authDomain: "legacychat-v1-411213.firebaseapp.com",
+  databaseURL: "https://legacychat-v1-411213-default-rtdb.firebaseio.com",
+  projectId: "legacychat-v1-411213",
+  storageBucket: "legacychat-v1-411213.appspot.com",
+  messagingSenderId: "310084659311",
+  appId: "1:310084659311:web:66a80fe7e8ac8d22c6c59a"
+};
 
 # here we are doing firebase authentication
 firebase = pyrebase.initialize_app(config)
