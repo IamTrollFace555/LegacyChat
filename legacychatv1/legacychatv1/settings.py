@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-from google.oauth2 import service_account
+# from google.oauth2 import service_account
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-flft(ks+!ej-5t-4c-bobg&7ubag+$-5l#!c(^%1a%adr*pmm8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["34.174.156.184", "127.0.0.1", "34.174.183.113"]
+ALLOWED_HOSTS = ["34.174.156.184", "127.0.0.1", "34.174.183.113", "34.145.61.184"]
 
 
 # Application definition
@@ -87,10 +87,10 @@ DATABASES = {
     }
 }
 
-# Firebase configuration
-FIREBASE_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, 'firebase_private_key/legacychat-v1-firebase-adminsdk-qrih9-98578240c9.json')
-)
+# # Firebase configuration
+# FIREBASE_CREDENTIALS = service_account.Credentials.from_service_account_file(
+#     os.path.join(BASE_DIR, 'firebase_private_key/legacychat-v1-firebase-adminsdk-qrih9-98578240c9.json')
+# )
 
 
 # Password validation
