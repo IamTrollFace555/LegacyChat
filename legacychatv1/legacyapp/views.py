@@ -247,7 +247,7 @@ def book_drafting(request):
 
     temp = list(pages.items())
     key_fun = lambda x: int(x[0][3:])
-    gens = sorted(temp, key=key_fun)
+    gens = sorted(temp, key=key_fun, reverse=True)
 
     return render(
         request,
