@@ -16,7 +16,7 @@ def login(request):
     prev_page = request.META["HTTP_REFERER"]
     flag = ""
     if "/users/login/" in prev_page:
-        flag = "Incorrect email or password!"
+        flag = "Incorrect email or password OR product key!"
 
     return render(request, "login.html", {"flag": flag})
 

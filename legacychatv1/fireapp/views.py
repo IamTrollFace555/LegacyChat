@@ -96,9 +96,11 @@ def login(request):
         response = request.POST
         email = response["email"]
         password = response["password"]
+        key = response["product-key"]
 
         # Try to log in
         try:
+            assert (key == "sk-L3g4cy-BA")
             user = auth.sign_in_with_email_and_password(email=email, password=password)
             user_id = user["localId"]
             request.session["user_id"] = user_id

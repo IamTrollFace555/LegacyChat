@@ -244,17 +244,17 @@ def book_drafting(request):
     next_chapters = [*zip(chapter_names[temp_idx + 1:] if temp_idx != len(chapter_names) - 1 else [],
                           [*range(int(chapter) + 1, len(chapter_names) + 1)] if temp_idx != len(
                               chapter_names) - 1 else [])]
-    print(chapter_names)
-    print(temp_idx)
-    print("prev: ", prev_chapters)
-    print("next: ", next_chapters)
+
+    temp = list(pages.items())
+    key_fun = lambda x: int(x[0][3:])
+    gens = sorted(temp, key=key_fun)
 
     return render(
         request,
         "book-drafting.html",
         {"chapter": chapter,
          "chapter_name": TITLE_DICT[chapter],
-         "pages": list(pages.items()),
+         "pages": gens,
          "prev_chapters": prev_chapters,
          "next_chapters": next_chapters,
          "chapter_idx": int(chapter),
